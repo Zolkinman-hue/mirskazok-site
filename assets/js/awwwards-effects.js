@@ -711,9 +711,12 @@ const AwwwardsEffects = {
         let userTouched = false;
         container.addEventListener('pointerdown', () => userTouched = true, { once: true });
 
-        const proxy = { p: 8 };
+        // НАПРАВЛЕНИЕ ВАЖНО: шторка едет 92% → 8%, т.е. ФОТО превращается в СКАЗКУ.
+        // Наоборот нельзя: в конце скролла карточка застывала бы почти целиком фотографией
+        // (владелец: «вместо феи — изображение мальчика»), иллюстрацию не было видно.
+        const proxy = { p: 92 };
         gsap.to(proxy, {
-            p: 92,
+            p: 8,
             ease: 'none',
             scrollTrigger: {
                 trigger: container,
