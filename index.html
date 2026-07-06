@@ -1062,6 +1062,9 @@
             -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
             scrollbar-color: rgba(212,168,83,0.4) transparent;
+            /* правый край растворяется — намёк, что лента листается */
+            -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 90%, transparent 100%);
+            mask-image: linear-gradient(90deg, #000 0%, #000 90%, transparent 100%);
         }
 
         .reviews .review-card {
@@ -1075,28 +1078,23 @@
             }
         }
 
-        /* Отзывы: спокойная свайп-лента вместо бегущей анимации */
-        .reviews .marquee {
-            animation: none;
-            display: flex;
-            gap: 24px;
-            overflow-x: auto;
-            padding: 8px 24px 20px;
-            scroll-snap-type: x mandatory;
-            -webkit-overflow-scrolling: touch;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(212,168,83,0.4) transparent;
+        /* Touch ripple: золотое свечение в точке касания (awwwards-effects.js) */
+        .ripple-host {
+            position: relative;
+            overflow: hidden;
         }
 
-        .reviews .review-card {
-            scroll-snap-align: start;
+        .touch-ripple {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(212, 168, 83, 0.35) 0%, transparent 70%);
+            transform: scale(0);
+            animation: touchRipple 0.7s ease-out forwards;
         }
 
-        @media (max-width: 768px) {
-            .reviews .review-card {
-                width: 290px;
-                padding: 22px;
-            }
+        @keyframes touchRipple {
+            to { transform: scale(2.5); opacity: 0; }
         }
 
         .review-card {

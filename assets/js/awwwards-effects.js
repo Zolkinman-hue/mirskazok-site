@@ -19,6 +19,9 @@ const AwwwardsEffects = {
         this.initScrollProgress();
         this.initMarquee();
         this.initNoiseTexture();
+        this.initTouchRipple();
+        this.initReviewsNudge();
+        this.initHeroParallaxLayers();
     },
 
     // 1. Custom Cursor с хвостом-шлейфом (desktop only)
@@ -368,6 +371,62 @@ const AwwwardsEffects = {
                 duration: 40,
                 repeat: -1,
                 ease: 'none'
+            });
+        });
+    },
+
+    // 10. Touch ripple — золотое свечение в точке касания (мобильная тактильность 2026)
+    initTouchRipple() {
+        const targets = document.querySelectorAll('.pricing-card, .catalog-card, .cta-btn, .pricing-cta');
+        targets.forEach(el => {
+            el.classList.add('ripple-host');
+            el.addEventListener('pointerdown', (e) => {
+                const rect = el.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const r = document.createElement('span');
+                r.className = 'touch-ripple';
+                r.style.width = r.style.height = size + 'px';
+                r.style.left = (e.clientX - rect.left - size / 2) + 'px';
+                r.style.top = (e.clientY - rect.top - size / 2) + 'px';
+                el.appendChild(r);
+                r.addEventListener('animationend', () => r.remove());
+            }, { passive: true });
+        });
+    },
+
+    // 11. Свайп-подсказка в отзывах: лента чуть сдвигается и упруго возвращается
+    initReviewsNudge() {
+        const strip = document.querySelector('.reviews .marquee');
+        if (!strip) return;
+        let done = false;
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(en => {
+                if (en.isIntersecting && !done && strip.scrollLeft === 0) {
+                    done = true;
+                    gsap.to(strip, {
+                        scrollLeft: 70, duration: 0.5, delay: 0.4, ease: 'power2.out',
+                        onComplete: () => gsap.to(strip, { scrollLeft: 0, duration: 0.7, ease: 'back.out(1.6)' })
+                    });
+                    io.disconnect();
+                }
+            });
+        }, { threshold: 0.5 });
+        io.observe(strip);
+    },
+
+    // 12. Многослойный параллакс hero: туман и орбы едут с разной скоростью
+    initHeroParallaxLayers() {
+        const fog = document.querySelector('.hero-fog-layer');
+        if (fog) {
+            gsap.to(fog, {
+                yPercent: 15, ease: 'none',
+                scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.2 }
+            });
+        }
+        gsap.utils.toArray('.hero-float').forEach(f => {
+            gsap.to(f, {
+                yPercent: -25, ease: 'none',
+                scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.2 }
             });
         });
     },
