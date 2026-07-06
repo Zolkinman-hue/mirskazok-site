@@ -1,0 +1,462 @@
+<!-- ВОЛНА 2: Новые компоненты для вставки в index.html -->
+
+<!-- 1. КИЛЛЕР-ФИЧА: ДО/ПОСЛЕ СЛАЙДЕР -->
+<!-- Вставить после секции "Как это работает" -->
+<section class="magic-transform" id="magic-transform">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="text-gradient">Магия превращения</h2>
+            <p>Увидьте, как фотография вашего ребёнка оживает в волшебных мирах наших сказок</p>
+        </div>
+
+        <div class="before-after-container">
+            <div class="before-after-wrapper">
+                <!-- До: портрет -->
+                <img src="assets/wave2/before_portrait.jpg" alt="Фотография ребёнка" class="before-img">
+                <!-- После: сказочный образ -->
+                <img src="assets/wave2/after_knight.jpg" alt="Ребёнок в сказке" class="after-img">
+
+                <!-- Слайдер-шторка -->
+                <div class="before-after-slider" style="left: 50%">
+                    <div class="slider-handle">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M15 18l-6-6 6-6M9 6l6 6-6 6"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Галерея превращений (tap для смены сцены) -->
+            <div class="transform-gallery">
+                <button class="transform-thumb active" data-scene="knight">
+                    <img src="assets/wave2/after_knight.jpg" alt="Рыцарь">
+                    <span>Рыцарь у замка</span>
+                </button>
+                <button class="transform-thumb" data-scene="astronaut">
+                    <img src="assets/wave2/after_astronaut.jpg" alt="Астронавт">
+                    <span>В космосе</span>
+                </button>
+                <button class="transform-thumb" data-scene="forest">
+                    <img src="assets/wave2/after_forest_magic.jpg" alt="Волшебный лес">
+                    <span>Волшебный лес</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CSS для До/После слайдера -->
+<style>
+.magic-transform {
+    background: var(--color-bg);
+    padding: 120px 24px;
+}
+
+.before-after-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.before-after-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    user-select: none;
+}
+
+.before-img, .after-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.before-img {
+    clip-path: inset(0 50% 0 0);
+    transition: clip-path 0.05s linear;
+}
+
+.before-after-slider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: var(--color-gold);
+    cursor: ew-resize;
+    z-index: 10;
+    transform: translateX(-2px);
+    box-shadow: 0 0 20px rgba(212, 168, 83, 0.6);
+}
+
+.slider-handle {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 56px;
+    height: 56px;
+    background: var(--color-gold);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-bg);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    cursor: grab;
+    transition: transform 0.2s ease;
+}
+
+.slider-handle:active {
+    cursor: grabbing;
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.transform-gallery {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.transform-thumb {
+    position: relative;
+    width: 140px;
+    height: 90px;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: none;
+    padding: 0;
+}
+
+.transform-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.transform-thumb span {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+    font-size: 0.75rem;
+    text-align: center;
+    font-weight: 500;
+}
+
+.transform-thumb.active {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 20px rgba(212, 168, 83, 0.4);
+}
+
+.transform-thumb:hover img {
+    transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+    .before-after-wrapper {
+        aspect-ratio: 4 / 3;
+    }
+    .transform-thumb {
+        width: 110px;
+        height: 70px;
+    }
+}
+</style>
+
+<!-- 2. HERO С ПАНОРАМОЙ (замена существующего hero) -->
+<style>
+.hero {
+    position: relative;
+    overflow: hidden;
+    background: var(--color-bg);
+}
+
+.hero-panorama-bg {
+    position: absolute;
+    inset: -10%;
+    width: 120%;
+    height: 120%;
+    background-image: url('assets/wave2/hero_panorama_castle.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.4;
+    filter: blur(2px);
+    z-index: 0;
+    transform: scale(1);
+    will-change: transform;
+}
+
+.hero-fog-layer {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom,
+        transparent 0%,
+        rgba(10,10,18,0.3) 40%,
+        rgba(10,10,18,0.8) 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+/* Плавающие светлячки-частицы */
+.hero-particle {
+    position: absolute;
+    width: 4px;
+    height: 4px;
+    background: var(--color-gold-light);
+    border-radius: 50%;
+    opacity: 0.6;
+    pointer-events: none;
+    box-shadow: 0 0 10px var(--color-gold-light);
+    animation: particle-float 8s ease-in-out infinite;
+}
+
+@keyframes particle-float {
+    0%, 100% { transform: translate(0, 0); opacity: 0.6; }
+    50% { transform: translate(var(--dx, 20px), var(--dy, -30px)); opacity: 1; }
+}
+</style>
+
+<!-- 3. ШОУКЕЙС СТИЛЕЙ (интерактивная галерея) -->
+<section class="styles-showcase" id="styles-showcase">
+    <div class="container">
+        <div class="section-header">
+            <h2>Выберите свой <span class="text-gradient">волшебный стиль</span></h2>
+            <p>Один сюжет — четыре совершенно разных воплощения</p>
+        </div>
+
+        <div class="showcase-scene-viewer">
+            <img src="assets/wave2/showcase_pixar.jpg" alt="Сцена в стиле Pixar" class="showcase-active-image">
+
+            <div class="showcase-style-switcher">
+                <button class="style-switch-btn active" data-style="pixar">
+                    <img src="assets/wave2/showcase_pixar.jpg" alt="Pixar">
+                    <span>Pixar 3D</span>
+                </button>
+                <button class="style-switch-btn" data-style="watercolor">
+                    <img src="assets/wave2/showcase_watercolor.jpg" alt="Акварель">
+                    <span>Акварель</span>
+                </button>
+                <button class="style-switch-btn" data-style="storybook">
+                    <img src="assets/wave2/showcase_storybook.jpg" alt="Storybook">
+                    <span>Storybook</span>
+                </button>
+                <button class="style-switch-btn" data-style="anime">
+                    <img src="assets/wave2/showcase_anime_soft.jpg" alt="Аниме">
+                    <span>Ghibli</span>
+                </button>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.styles-showcase {
+    background: linear-gradient(180deg, var(--color-bg) 0%, var(--color-bg-warm) 100%);
+    padding: 120px 24px;
+}
+
+.showcase-scene-viewer {
+    max-width: 900px;
+    margin: 0 auto;
+    position: relative;
+}
+
+.showcase-active-image {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 20px;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+    transition: opacity 0.4s ease;
+}
+
+.showcase-style-switcher {
+    display: flex;
+    gap: 16px;
+    margin-top: 32px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.style-switch-btn {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 3px solid transparent;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: none;
+    padding: 0;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+}
+
+.style-switch-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.style-switch-btn span {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 8px;
+    background: linear-gradient(to top, rgba(0,0,0,0.9), transparent);
+    color: white;
+    font-size: 0.8rem;
+    text-align: center;
+    font-weight: 600;
+}
+
+.style-switch-btn.active {
+    border-color: var(--color-gold);
+    box-shadow: 0 0 30px rgba(212, 168, 83, 0.5);
+    transform: scale(1.05);
+}
+
+.style-switch-btn:hover:not(.active) {
+    border-color: rgba(212, 168, 83, 0.5);
+    transform: scale(1.03);
+}
+
+@media (max-width: 768px) {
+    .style-switch-btn {
+        width: 90px;
+        height: 90px;
+    }
+}
+</style>
+
+<!-- 4. МОКАПЫ КНИГ В СЕКЦИИ ТАРИФОВ -->
+<div class="tier-mockup">
+    <img src="assets/wave2/mockup_desk.jpg" alt="Печатная книга на столе" class="mockup-photo">
+</div>
+
+<style>
+.tier-mockup {
+    margin: 24px 0;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+}
+
+.mockup-photo {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.5s ease;
+}
+
+.tier-mockup:hover .mockup-photo {
+    transform: scale(1.05);
+}
+</style>
+
+<!-- 5. MARQUEE-ЛЕНТА (между секциями) -->
+<div class="marquee" style="overflow:hidden;padding:20px 0;background:rgba(212,168,83,0.1);border-top:1px solid rgba(212,168,83,0.2);border-bottom:1px solid rgba(212,168,83,0.2)">
+    <div class="marquee-content" style="display:inline-block;white-space:nowrap;font-size:1.2rem;color:var(--color-gold-light);font-weight:600;letter-spacing:0.1em;transform:skew(-5deg)">
+        ✦ ВАШ РЕБЁНОК — ГЕРОЙ СКАЗКИ ✦ СОЗДАНО С ЛЮБОВЬЮ ✦ ПЕРСОНАЛЬНАЯ ИСТОРИЯ ✦ ВОЛШЕБСТВО В КАЖДОЙ СТРАНИЦЕ ✦
+    </div>
+</div>
+
+<!-- 6. СЕКЦИЯ ЭМОЦИЙ С МОКАПАМИ -->
+<section class="emotion-moments" style="background:var(--color-bg);padding:100px 24px">
+    <div class="container">
+        <div class="section-header">
+            <h2>Моменты, которые <span class="text-gradient">останутся навсегда</span></h2>
+            <p>Подарите своему ребёнку незабываемые воспоминания</p>
+        </div>
+
+        <div class="emotion-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:24px;max-width:1200px;margin:0 auto">
+            <div class="emotion-card">
+                <img src="assets/wave2/emotion_dad_son.jpg" alt="Папа с сыном читают книгу" loading="lazy">
+                <div class="emotion-overlay">
+                    <h3>Вместе с папой</h3>
+                    <p>Особые вечера, наполненные теплом и близостью</p>
+                </div>
+            </div>
+            <div class="emotion-card">
+                <img src="assets/wave2/emotion_grandma_girl.jpg" alt="Бабушка с внучкой" loading="lazy">
+                <div class="emotion-overlay">
+                    <h3>Связь поколений</h3>
+                    <p>Бабушки и дедушки обожают читать внукам</p>
+                </div>
+            </div>
+            <div class="emotion-card">
+                <img src="assets/wave2/emotion_sleeping_hug.jpg" alt="Ребёнок засыпает с книгой" loading="lazy">
+                <div class="emotion-overlay">
+                    <h3>Сладкие сны</h3>
+                    <p>Любимая книга — лучший друг перед сном</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+.emotion-card {
+    position: relative;
+    border-radius: 16px;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease;
+}
+
+.emotion-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.emotion-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, transparent 60%);
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.emotion-card:hover .emotion-overlay {
+    opacity: 1;
+}
+
+.emotion-card:hover img {
+    transform: scale(1.1);
+}
+
+.emotion-overlay h3 {
+    color: white;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.emotion-overlay p {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.95rem;
+}
+</style>
