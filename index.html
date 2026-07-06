@@ -953,9 +953,11 @@
             background: linear-gradient(180deg, rgba(212, 168, 83, 0.08) 0%, transparent 100%);
         }
 
+        /* Бейдж внутри карточки: у карточек overflow:hidden (ripple),
+           выступающий наружу бейдж срезало */
         .pricing-badge {
             position: absolute;
-            top: -12px;
+            top: 14px;
             left: 50%;
             transform: translateX(-50%);
             padding: 6px 20px;
@@ -966,6 +968,10 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             border-radius: 20px;
+        }
+
+        .pricing-card.featured {
+            padding-top: 56px;
         }
 
         .pricing-title {
@@ -1747,7 +1753,7 @@
                 <div class="hero-trust">
                     <span class="trust-badge">Превью бесплатно</span>
                     <span class="trust-badge">Оплата после превью</span>
-                    <span class="trust-badge">Готово за 5–7 дней</span>
+                    <span class="trust-badge">PDF за 10 минут</span>
                 </div>
             </div>
         </section>
@@ -1784,7 +1790,7 @@
                     <div class="step">
                         <div class="step-number">4</div>
                         <h3>Получите книгу</h3>
-                        <p>PDF за 3-5 дней или печатную книгу премиум-качества</p>
+                        <p>PDF-книга готова за ~10 минут, печатная — с доставкой премиум-качества</p>
                     </div>
                 </div>
             </div>
@@ -2087,7 +2093,7 @@
                             <li>10 разворотов с иллюстрациями</li>
                             <li>Персонализация по фото</li>
                             <li>Имя ребёнка в сюжете</li>
-                            <li>Готовность 3-5 дней</li>
+                            <li>Готова за ~10 минут</li>
                             <li>Формат PDF A3</li>
                         </ul>
                         <a href="https://t.me/Skazochk1_bot" class="pricing-cta">Заказать</a>
@@ -2238,7 +2244,7 @@
                     <div class="faq-item">
                         <button class="faq-question">Сколько времени занимает создание книги?</button>
                         <div class="faq-answer">
-                            <p>PDF-версия готовится 3-5 рабочих дней. Печатная книга — 7 дней на создание + время доставки (зависит от региона, обычно 3-10 дней).</p>
+                            <p>PDF-версия создаётся примерно за 10 минут — бот пришлёт готовую книгу прямо в чат. Печатная книга — 7 дней на печать + время доставки (зависит от региона, обычно 3-10 дней).</p>
                         </div>
                     </div>
                     <div class="faq-item">
@@ -2257,6 +2263,12 @@
                         <button class="faq-question">Как оплатить заказ?</button>
                         <div class="faq-answer">
                             <p>Оплата производится онлайн через безопасный платёжный шлюз Робокасса. Принимаем карты Visa, MasterCard, МИР, а также СБП.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Можно ли вернуть деньги?</button>
+                        <div class="faq-answer">
+                            <p>Вы принимаете решение об оплате уже ПОСЛЕ бесплатного превью — видите обложку и стиль до того, как платить. Книга создаётся индивидуально под вашего ребёнка, поэтому после запуска генерации возврат не производится, цифровая PDF-книга возврату не подлежит. Если в печатной книге обнаружится типографский брак — перепечатаем и доставим за наш счёт.</p>
                         </div>
                     </div>
                     <div class="faq-item">
