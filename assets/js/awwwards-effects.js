@@ -42,8 +42,8 @@ const AwwwardsEffects = {
         function animateCursor() {
             const dx = mouseX - cursorX;
             const dy = mouseY - cursorY;
-            cursorX += dx * 0.15;
-            cursorY += dy * 0.15;
+            cursorX += dx * 0.5;
+            cursorY += dy * 0.5;
             cursor.style.transform = `translate(${cursorX}px, ${cursorY}px)`;
             requestAnimationFrame(animateCursor);
         }
@@ -63,36 +63,33 @@ const AwwwardsEffects = {
                 pointer-events: none;
                 z-index: 9999;
                 mix-blend-mode: difference;
-                top: -12px;
-                left: -12px;
+                top: -8px;
+                left: -8px;
+                opacity: 0.35;
             }
             .cursor-inner {
-                width: 24px;
-                height: 24px;
-                border: 2px solid var(--color-gold-light);
+                width: 16px;
+                height: 16px;
+                border: 1.5px solid var(--color-gold-light);
                 border-radius: 50%;
                 transition: transform 0.2s ease, border-color 0.2s ease;
             }
             .custom-cursor.hover .cursor-inner {
-                transform: scale(1.8);
+                transform: scale(1.5);
                 border-color: var(--color-gold);
             }
             .custom-cursor::before {
                 content: '';
                 position: absolute;
-                top: 9px;
-                left: 9px;
-                width: 6px;
-                height: 6px;
+                top: 6px;
+                left: 6px;
+                width: 4px;
+                height: 4px;
                 background: var(--color-gold-light);
                 border-radius: 50%;
             }
-            * {
-                cursor: none !important;
-            }
             @media (max-width: 768px) {
                 .custom-cursor { display: none; }
-                * { cursor: auto !important; }
             }
         `;
         document.head.appendChild(style);
@@ -367,7 +364,7 @@ const AwwwardsEffects = {
 
             gsap.to(content, {
                 x: '-50%',
-                duration: 20,
+                duration: 40,
                 repeat: -1,
                 ease: 'none'
             });

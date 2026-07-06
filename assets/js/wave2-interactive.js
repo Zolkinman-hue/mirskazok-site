@@ -151,7 +151,7 @@ const Wave2Interactive = {
         const styles = {
             pixar: 'assets/wave2/showcase_pixar.jpg',
             watercolor: 'assets/wave2/showcase_watercolor.jpg',
-            storybook: 'assets/wave2/showcase_storybook.jpg',
+            disney: 'assets/wave2/showcase_disney.jpg',
             anime: 'assets/wave2/showcase_anime_soft.jpg'
         };
 

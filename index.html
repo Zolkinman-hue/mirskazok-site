@@ -147,12 +147,13 @@
 
         .hero-panorama-bg {
             position: absolute;
-            inset: -10%;
-            width: 120%;
-            height: 120%;
+            inset: 0;
+            width: 100%;
+            height: 100%;
             background-image: url('assets/wave2/hero_panorama_castle.jpg');
             background-size: cover;
-            background-position: center;
+            background-position: center center;
+            background-repeat: no-repeat;
             opacity: 0.35;
             filter: blur(1px);
             z-index: 0;
@@ -187,22 +188,22 @@
             color: var(--color-gold-light);
             margin-bottom: 24px;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
         }
 
         .hero h1 {
             margin-bottom: 24px;
             opacity: 0;
-            transform: translateY(40px);
+            transform: translateY(50px);
         }
 
         .hero-subtitle {
             font-size: clamp(1.125rem, 2.5vw, 1.5rem);
             color: var(--color-text-muted);
-            max-width: 600px;
+            max-width: 700px;
             margin: 0 auto 40px;
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(40px);
         }
 
         /* CTA Button */
@@ -287,9 +288,9 @@
         .hero-image {
             position: absolute;
             right: 5%;
-            bottom: 10%;
-            width: 35%;
-            max-width: 450px;
+            bottom: 12%;
+            width: 32%;
+            max-width: 420px;
             opacity: 0;
             transform: translateX(50px);
             z-index: 1;
@@ -304,11 +305,11 @@
         .hero-trust {
             display: flex;
             gap: 16px;
-            margin-top: 24px;
+            margin-top: 32px;
             flex-wrap: wrap;
             justify-content: center;
             opacity: 0;
-            transform: translateY(20px);
+            transform: translateY(30px);
         }
 
         .trust-badge {
@@ -318,6 +319,7 @@
             border-radius: 20px;
             font-size: 0.8rem;
             color: var(--color-text-muted);
+            white-space: nowrap;
         }
 
         @media (max-width: 900px) {
@@ -1048,10 +1050,14 @@
         .review-card {
             flex-shrink: 0;
             width: 350px;
+            min-height: 220px;
             padding: 30px;
             background: rgba(255, 255, 255, 0.02);
             border: 1px solid rgba(255, 255, 255, 0.05);
             border-radius: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .review-stars {
@@ -1064,11 +1070,14 @@
             color: var(--color-text);
             margin-bottom: 20px;
             font-style: italic;
+            line-height: 1.6;
+            flex-grow: 1;
         }
 
         .review-author {
             color: var(--color-text-muted);
             font-size: 0.875rem;
+            margin-top: auto;
         }
 
         /* FAQ */
@@ -1551,9 +1560,9 @@
                             <img src="assets/wave2/showcase_watercolor.jpg" alt="Акварель">
                             <span>Акварель</span>
                         </button>
-                        <button class="style-switch-btn" data-style="storybook">
-                            <img src="assets/wave2/showcase_storybook.jpg" alt="Storybook">
-                            <span>Storybook</span>
+                        <button class="style-switch-btn" data-style="disney">
+                            <img src="assets/wave2/showcase_disney.jpg" alt="Disney">
+                            <span>Дисней</span>
                         </button>
                         <button class="style-switch-btn" data-style="anime">
                             <img src="assets/wave2/showcase_anime_soft.jpg" alt="Аниме">
@@ -1839,7 +1848,7 @@
         let lenis;
         if (!prefersReducedMotion) {
             lenis = new Lenis({
-                duration: 1.2,
+                duration: 1.0,
                 easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
                 orientation: 'vertical',
                 gestureOrientation: 'vertical',
@@ -1885,13 +1894,13 @@
             const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
             heroTl
-                .to('.hero-badge', { opacity: 1, y: 0, duration: 0.8 }, 0.2)
-                .to('.hero h1', { opacity: 1, y: 0, duration: 1 }, 0.4)
-                .to('.hero-subtitle', { opacity: 1, y: 0, duration: 0.8 }, 0.6)
-                .to('.cta-btn', { opacity: 1, y: 0, duration: 0.8 }, 0.8)
-                .to('.hero-trust', { opacity: 1, y: 0, duration: 0.6 }, 1)
-                .to('.hero-image', { opacity: 1, x: 0, duration: 1 }, 0.6)
-                .to('.hero-float', { opacity: 0.6, duration: 1 }, 0.5);
+                .to('.hero-badge', { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' }, 0.3)
+                .to('.hero h1', { opacity: 1, y: 0, duration: 1.4, ease: 'power2.out' }, 0.6)
+                .to('.hero-subtitle', { opacity: 1, y: 0, duration: 1.2, ease: 'power2.out' }, 1.0)
+                .to('.cta-btn', { opacity: 1, y: 0, duration: 1.0, ease: 'power2.out' }, 1.4)
+                .to('.hero-trust', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out' }, 1.8)
+                .to('.hero-image', { opacity: 1, x: 0, duration: 1.2, ease: 'power2.out' }, 0.9)
+                .to('.hero-float', { opacity: 0.6, duration: 1.2 }, 0.7);
 
             // Steps animation
             gsap.utils.toArray('.step').forEach((step, i) => {
