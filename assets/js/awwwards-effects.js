@@ -332,6 +332,7 @@ const AwwwardsEffects = {
             position: fixed;
             top: 0;
             left: 0;
+            width: 100%;
             height: 3px;
             background: linear-gradient(90deg, var(--color-gold), var(--color-gold-light));
             z-index: 9998;

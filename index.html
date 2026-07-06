@@ -445,7 +445,12 @@
             pointer-events: none;
         }
 
+        .after-img {
+            z-index: 1;
+        }
+
         .before-img {
+            z-index: 2;
             clip-path: inset(0 50% 0 0);
             transition: clip-path 0.05s linear;
         }
@@ -1048,6 +1053,30 @@
         @keyframes marquee {
             0% { transform: translateX(0); }
             100% { transform: translateX(-50%); }
+        }
+
+        /* Отзывы: спокойная свайп-лента вместо бегущей анимации */
+        .reviews .marquee {
+            animation: none;
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            padding: 8px 24px 20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212,168,83,0.4) transparent;
+        }
+
+        .reviews .review-card {
+            scroll-snap-align: start;
+        }
+
+        @media (max-width: 768px) {
+            .reviews .review-card {
+                width: 290px;
+                padding: 22px;
+            }
         }
 
         .review-card {
