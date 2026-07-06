@@ -206,6 +206,13 @@
             transform: translateY(40px);
         }
 
+        .hero-cta-note {
+            margin-top: 14px;
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            opacity: 0.85;
+        }
+
         /* CTA Button */
         .cta-btn {
             display: inline-flex;
@@ -1040,19 +1047,32 @@
             overflow: hidden;
         }
 
-        .marquee {
+        /* ВАЖНО: бегущую строку-баннер двигает GSAP (awwwards-effects.js initMarquee,
+           анимируется .marquee-content). CSS-анимацию на сам контейнер .marquee НЕ вешать —
+           контейнер уезжает влево на полширины и рвёт мобильную вёрстку. */
+
+        /* Отзывы: спокойная свайп-лента вместо бегущей анимации */
+        .reviews .marquee {
+            animation: none;
             display: flex;
             gap: 24px;
-            animation: marquee 40s linear infinite;
+            overflow-x: auto;
+            padding: 8px 24px 20px;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(212,168,83,0.4) transparent;
         }
 
-        .marquee:hover {
-            animation-play-state: paused;
+        .reviews .review-card {
+            scroll-snap-align: start;
         }
 
-        @keyframes marquee {
-            0% { transform: translateX(0); }
-            100% { transform: translateX(-50%); }
+        @media (max-width: 768px) {
+            .reviews .review-card {
+                width: 290px;
+                padding: 22px;
+            }
         }
 
         /* Отзывы: спокойная свайп-лента вместо бегущей анимации */
@@ -1333,6 +1353,15 @@
                 animation: none;
             }
 
+            /* GSAP-анимации пропускаются при reduced motion — элементы с
+               начальным opacity:0 в CSS обязаны стать видимыми без него */
+            .hero-badge, .hero h1, .hero-subtitle, .cta-btn, .hero-trust,
+            .hero-image, .hero-cta-note, .step, .catalog-card, .book-spread,
+            .style-chip, .faq-item, .pricing-card, .emotion-card, .section-header {
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
             html {
                 scroll-behavior: auto;
             }
@@ -1358,25 +1387,26 @@
             </div>
 
             <div class="hero-content">
-                <div class="hero-badge">Сотни счастливых семей</div>
-                <h1><span class="text-gradient">Ваш ребёнок —</span><br>главный герой сказки</h1>
-                <p class="hero-subtitle">Создаём уникальные персональные книги с AI-иллюстрациями, где каждая страница оживает лицом вашего малыша</p>
+                <div class="hero-badge">🎁 Подарок, который ребёнок запомнит навсегда</div>
+                <h1><span class="text-gradient">Книга, где ваш ребёнок</span><br>— главный герой</h1>
+                <p class="hero-subtitle">Малыш открывает книгу — и видит СЕБЯ в роли космонавта, принцессы или отважного рыцаря. 23 волшебных сюжета, лицо ребёнка на каждой странице</p>
                 <a href="https://t.me/Skazochk1_bot" class="cta-btn" id="heroCta">
-                    Создать книгу
+                    Попробовать бесплатно
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M5 12h14M12 5l7 7-7 7"/>
                     </svg>
                 </a>
+                <p class="hero-cta-note">Превью за 2 минуты · оплата — только если понравится</p>
                 <div class="hero-trust">
-                    <span class="trust-badge">Превью бесплатно</span>
-                    <span class="trust-badge">Оплата Робокасса</span>
-                    <span class="trust-badge">Поддержка 24/7</span>
+                    <span class="trust-badge">✅ Превью бесплатно</span>
+                    <span class="trust-badge">✅ Оплата после превью</span>
+                    <span class="trust-badge">✅ Готово за 5–7 дней</span>
                 </div>
             </div>
         </section>
 
         <!-- How It Works -->
-        <section class="how-it-works">
+        <section class="how-it-works" id="how-it-works">
             <div class="container">
                 <div class="section-header">
                     <h2 class="text-gradient">Как это работает</h2>
@@ -1448,7 +1478,7 @@
         </div>
 
         <!-- Catalog -->
-        <section class="catalog">
+        <section class="catalog" id="catalog">
             <div class="container">
                 <div class="section-header">
                     <h2 class="text-gradient">Наши сказки</h2>
@@ -1624,7 +1654,7 @@
         </section>
 
         <!-- Pricing -->
-        <section class="pricing">
+        <section class="pricing" id="pricing">
             <div class="container">
                 <div class="section-header">
                     <h2 class="text-gradient">Тарифы</h2>
@@ -1654,7 +1684,7 @@
                         <ul class="pricing-features">
                             <li>Всё из PDF-тарифа</li>
                             <li>Печать на премиум-бумаге</li>
-                            <li>Твёрдый переплёт 20x20 см</li>
+                            <li>Твёрдый переплёт 20×28 см</li>
                             <li>Доставка по России</li>
                             <li>Готовность 7 дней + доставка</li>
                         </ul>
@@ -1667,10 +1697,10 @@
                         <div class="pricing-price">7 500 <span>руб.</span></div>
                         <ul class="pricing-features">
                             <li>Всё из печатного тарифа</li>
-                            <li>Расширенный формат 20x28 см</li>
-                            <li>Дополнительные персонажи</li>
+                            <li>Аудио-озвучка книги (MP3)</li>
+                            <li>Видео-тизер для соцсетей</li>
+                            <li>Подарочная упаковка</li>
                             <li>Приоритетное создание</li>
-                            <li>Индивидуальные правки</li>
                         </ul>
                         <a href="https://t.me/Skazochk1_bot" class="pricing-cta">Заказать</a>
                     </div>
@@ -1749,7 +1779,7 @@
         </section>
 
         <!-- FAQ -->
-        <section class="faq">
+        <section class="faq" id="faq">
             <div class="container">
                 <div class="section-header">
                     <h2 class="text-gradient">Частые вопросы</h2>
