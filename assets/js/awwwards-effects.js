@@ -29,6 +29,9 @@ const AwwwardsEffects = {
         this.initKineticHeadings();
         this.initFairyDust();
         this.initSpringCounters();
+        this.initAmbientDust();
+        this.initAmbientOrbs();
+        this.initIdleFloat();
     },
 
     // 1. Custom Cursor с хвостом-шлейфом (desktop only)
@@ -512,6 +515,104 @@ const AwwwardsEffects = {
             });
         }, { threshold: 0.6 });
         els.forEach(el => io.observe(el));
+    },
+
+    // 16. Сквозная живая пыльца через ВЕСЬ сайт (ambient layer, стиль Dala/refero)
+    initAmbientDust() {
+        const canvas = document.createElement('canvas');
+        canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;';
+        document.body.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        let W, H;
+        const resize = () => { W = canvas.width = innerWidth; H = canvas.height = innerHeight; };
+        resize();
+        addEventListener('resize', resize);
+
+        const lowEnd = (navigator.hardwareConcurrency || 4) <= 4 || innerWidth < 500;
+        const N = lowEnd ? 26 : 60;
+        // 85% золото + 15% акценты (фиолет/бирюза) — как мультицвет в референсе
+        const palettes = [
+            () => `hsla(${40 + Math.random() * 12}, 70%, ${60 + Math.random() * 18}%,`,
+            () => `hsla(${262 + Math.random() * 16}, 60%, 68%,`,
+            () => `hsla(${175 + Math.random() * 14}, 55%, 62%,`,
+        ];
+        const parts = [];
+        for (let i = 0; i < N; i++) {
+            const pal = Math.random() < 0.85 ? 0 : (Math.random() < 0.5 ? 1 : 2);
+            parts.push({
+                x: Math.random(), y: Math.random(),
+                s: 0.8 + Math.random() * 1.8,
+                vy: 0.00016 + Math.random() * 0.0003,
+                drift: Math.random() * Math.PI * 2,
+                a: 0.12 + Math.random() * 0.3,
+                tri: Math.random() < 0.5,
+                col: palettes[pal](),
+            });
+        }
+
+        let lastScroll = scrollY, scrollVel = 0;
+        const tick = () => {
+            scrollVel += ((scrollY - lastScroll) * 0.06 - scrollVel) * 0.1;
+            lastScroll = scrollY;
+            ctx.clearRect(0, 0, W, H);
+            const t = performance.now() * 0.001;
+            for (const p of parts) {
+                p.y -= p.vy + scrollVel * 0.0004;
+                p.x += Math.sin(t * 0.6 + p.drift) * 0.0002;
+                if (p.y < -0.02) { p.y = 1.02; p.x = Math.random(); }
+                if (p.y > 1.02) { p.y = -0.02; p.x = Math.random(); }
+                const X = p.x * W, Y = p.y * H, s = p.s;
+                const twinkle = p.a * (0.65 + 0.35 * Math.sin(t * 1.4 + p.drift * 3));
+                ctx.fillStyle = p.col + twinkle + ')';
+                if (p.tri) {
+                    ctx.beginPath();
+                    ctx.moveTo(X, Y - s);
+                    ctx.lineTo(X + s, Y + s);
+                    ctx.lineTo(X - s, Y + s);
+                    ctx.closePath();
+                    ctx.fill();
+                } else {
+                    ctx.beginPath();
+                    ctx.arc(X, Y, s * 0.7, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+            requestAnimationFrame(tick);
+        };
+        tick();
+    },
+
+    // 17. Дрейфующие золотые свечения в фоне каждой секции
+    initAmbientOrbs() {
+        const sections = document.querySelectorAll('.catalog, .pricing, .reviews, .faq, .comparison, .guarantee, .book-preview');
+        sections.forEach((sec, si) => {
+            const cs = getComputedStyle(sec);
+            if (cs.position === 'static') sec.style.position = 'relative';
+            sec.style.overflow = 'hidden';
+            for (let i = 0; i < 2; i++) {
+                const orb = document.createElement('div');
+                orb.className = 'ambient-orb';
+                orb.style.left = (i === 0 ? 5 + (si % 3) * 10 : 60 + (si % 4) * 8) + '%';
+                orb.style.top = (i === 0 ? 15 : 55) + '%';
+                orb.style.animationDelay = (si * 1.7 + i * 4) + 's';
+                orb.style.animationDuration = (14 + si * 2 + i * 5) + 's';
+                sec.prepend(orb);
+            }
+        });
+    },
+
+    // 18. Idle-float: элементы едва заметно дышат в покое.
+    // ВАЖНО: float вешаем на ДЕТЕЙ карточек, не на сами карточки — на карточках
+    // transform занят GSAP (entrance + 3D tilt), CSS-анимация его перебила бы.
+    initIdleFloat() {
+        const targets = document.querySelectorAll(
+            '.catalog-card img, .emotion-card img, .guarantee-icon, .comparison-icon, .step-number, .hero-badge'
+        );
+        targets.forEach((el, i) => {
+            el.classList.add('idle-float');
+            el.style.animationDelay = (i % 5) * 0.9 + 's';
+            el.style.animationDuration = (6 + (i % 4)) + 's';
+        });
     },
 
     // 9. Noise-текстура overlay

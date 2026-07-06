@@ -371,6 +371,12 @@
             .sticky-cta {
                 display: block;
             }
+
+            /* Контент не должен прятаться под sticky-кнопкой (скрин владельца:
+               миниатюры «до/после» уходили под кнопку) */
+            body {
+                padding-bottom: 76px;
+            }
         }
 
         /* Emotions section */
@@ -1062,6 +1068,10 @@
             -webkit-overflow-scrolling: touch;
             scrollbar-width: thin;
             scrollbar-color: rgba(212,168,83,0.4) transparent;
+            /* КРИТИЧНО: базовый .marquee (бегущая строка) задаёт nowrap — без
+               возврата к normal текст отзывов не переносится и наезжает на
+               соседние карточки (баг со скринов владельца 2026-07-06) */
+            white-space: normal;
             /* правый край растворяется — намёк, что лента листается */
             -webkit-mask-image: linear-gradient(90deg, #000 0%, #000 90%, transparent 100%);
             mask-image: linear-gradient(90deg, #000 0%, #000 90%, transparent 100%);
@@ -1342,6 +1352,48 @@
         @keyframes ctaPulseRing {
             0% { opacity: 0.7; transform: scale(1); }
             100% { opacity: 0; transform: scale(1.12, 1.6); }
+        }
+
+        /* === Ambient motion: весь сайт живёт (стиль Dala/refero) === */
+
+        /* Дрейфующие свечения в фоне секций */
+        .ambient-orb {
+            position: absolute;
+            width: clamp(220px, 36vw, 460px);
+            aspect-ratio: 1;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(212,168,83,0.13), rgba(212,168,83,0.04) 45%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            animation: orbDrift 18s ease-in-out infinite alternate;
+        }
+
+        @keyframes orbDrift {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(9vw, -7vh) scale(1.25); }
+        }
+
+        /* Idle-дыхание элементов (вешается на детей карточек, не конфликтует с tilt) */
+        .idle-float {
+            animation-name: idleFloat;
+            animation-timing-function: ease-in-out;
+            animation-iteration-count: infinite;
+        }
+
+        @keyframes idleFloat {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-6px); }
+        }
+
+        /* Живое золото в kinetic-заголовках — градиент постоянно переливается */
+        .kin-word {
+            background-size: 220% 100%;
+            animation: goldLive 5s ease-in-out infinite alternate;
+        }
+
+        @keyframes goldLive {
+            from { background-position: 0% center; }
+            to { background-position: 100% center; }
         }
 
         /* Touch ripple: золотое свечение в точке касания (awwwards-effects.js) */
@@ -1712,7 +1764,7 @@
             <div class="container">
                 <div class="section-header">
                     <h2 class="text-gradient">Магия превращения</h2>
-                    <p>Увидьте, как фотография вашего ребёнка оживает в волшебных мирах наших сказок</p>
+                    <p>Посмотрите, как фотография вашего ребёнка оживает в волшебных мирах наших сказок</p>
                 </div>
 
                 <div class="before-after-container">
