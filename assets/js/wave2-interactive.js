@@ -109,33 +109,45 @@ const Wave2Interactive = {
         })();
     },
 
-    // Галерея превращений (смена сцены)
+    // Галерея превращений (смена пары портретов)
     initTransformGallery() {
         const thumbs = document.querySelectorAll('.transform-thumb');
+        const beforeImg = document.querySelector('.before-after-wrapper .before-img');
         const afterImg = document.querySelector('.before-after-wrapper .after-img');
-        if (!thumbs.length || !afterImg) return;
+        if (!thumbs.length || !beforeImg || !afterImg) return;
 
-        const scenes = {
-            knight: 'assets/wave2/after_knight.jpg',
-            astronaut: 'assets/wave2/after_astronaut.jpg',
-            forest: 'assets/wave2/after_forest_magic.jpg'
+        const pairs = {
+            boy_knight: {
+                before: 'assets/wave2/before_portrait_boy_knight.jpg',
+                after: 'assets/wave2/after_boy_knight.jpg'
+            },
+            girl_fairy: {
+                before: 'assets/wave2/before_portrait_girl_fairy.jpg',
+                after: 'assets/wave2/after_girl_fairy.jpg'
+            }
         };
 
         thumbs.forEach(thumb => {
             thumb.addEventListener('click', () => {
-                const scene = thumb.dataset.scene;
-                if (!scenes[scene]) return;
+                const pair = thumb.dataset.pair;
+                if (!pairs[pair]) return;
 
                 // Обновить активную кнопку
                 thumbs.forEach(t => t.classList.remove('active'));
                 thumb.classList.add('active');
 
-                // Сменить изображение с fade
+                // Сменить ОБЕ картинки с fade
+                beforeImg.style.transition = 'opacity 0.3s ease';
                 afterImg.style.transition = 'opacity 0.3s ease';
+                beforeImg.style.opacity = '0';
                 afterImg.style.opacity = '0';
 
                 setTimeout(() => {
-                    afterImg.src = scenes[scene];
+                    beforeImg.src = pairs[pair].before;
+                    afterImg.src = pairs[pair].after;
+                    beforeImg.alt = pair === 'boy_knight' ? 'Реальное фото мальчика' : 'Реальное фото девочки';
+                    afterImg.alt = pair === 'boy_knight' ? 'Мальчик-рыцарь в Pixar-стиле' : 'Девочка-фея в Pixar-стиле';
+                    beforeImg.style.opacity = '1';
                     afterImg.style.opacity = '1';
                 }, 300);
             });

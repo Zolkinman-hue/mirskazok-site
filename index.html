@@ -425,8 +425,10 @@
 
         .before-after-wrapper {
             position: relative;
+            max-width: 500px;
             width: 100%;
-            aspect-ratio: 16 / 9;
+            aspect-ratio: 3 / 4;
+            margin: 0 auto;
             border-radius: 20px;
             overflow: hidden;
             box-shadow: 0 30px 80px rgba(0,0,0,0.4);
@@ -493,8 +495,8 @@
 
         .transform-thumb {
             position: relative;
-            width: 140px;
-            height: 90px;
+            width: 110px;
+            height: 145px;
             border-radius: 12px;
             overflow: hidden;
             border: 3px solid transparent;
@@ -535,11 +537,12 @@
 
         @media (max-width: 768px) {
             .before-after-wrapper {
-                aspect-ratio: 4 / 3;
+                aspect-ratio: 3 / 4;
+                max-width: 100%;
             }
             .transform-thumb {
                 width: 110px;
-                height: 70px;
+                height: 145px;
             }
         }
 
@@ -1386,8 +1389,8 @@
 
                 <div class="before-after-container">
                     <div class="before-after-wrapper">
-                        <img src="assets/wave2/before_portrait.jpg" alt="Фотография ребёнка" class="before-img">
-                        <img src="assets/wave2/after_knight.jpg" alt="Ребёнок в сказке" class="after-img">
+                        <img src="assets/wave2/before_portrait_boy_knight.jpg" alt="Реальное фото мальчика" class="before-img">
+                        <img src="assets/wave2/after_boy_knight.jpg" alt="Мальчик-рыцарь в Pixar-стиле" class="after-img">
                         <div class="before-after-slider" style="left: 50%">
                             <div class="slider-handle">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1397,17 +1400,13 @@
                         </div>
                     </div>
                     <div class="transform-gallery">
-                        <button class="transform-thumb active" data-scene="knight">
-                            <img src="assets/wave2/after_knight.jpg" alt="Рыцарь">
-                            <span>Рыцарь у замка</span>
+                        <button class="transform-thumb active" data-pair="boy_knight">
+                            <img src="assets/wave2/after_boy_knight.jpg" alt="Мальчик-рыцарь">
+                            <span>Мальчик-рыцарь</span>
                         </button>
-                        <button class="transform-thumb" data-scene="astronaut">
-                            <img src="assets/wave2/after_astronaut.jpg" alt="Астронавт">
-                            <span>В космосе</span>
-                        </button>
-                        <button class="transform-thumb" data-scene="forest">
-                            <img src="assets/wave2/after_forest_magic.jpg" alt="Волшебный лес">
-                            <span>Волшебный лес</span>
+                        <button class="transform-thumb" data-pair="girl_fairy">
+                            <img src="assets/wave2/after_girl_fairy.jpg" alt="Девочка-фея">
+                            <span>Девочка-фея</span>
                         </button>
                     </div>
                 </div>
