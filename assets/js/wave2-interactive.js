@@ -123,7 +123,7 @@ const Wave2Interactive = {
             },
             girl_fairy: {
                 before: 'assets/wave2/before_portrait_girl_fairy.jpg',
-                after: 'assets/wave2/after_girl_fairy_v2.jpg'
+                after: 'assets/wave2/after_girl_fairy_final.jpg'
             }
         };
 
