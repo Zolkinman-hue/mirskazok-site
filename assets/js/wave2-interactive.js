@@ -119,11 +119,11 @@ const Wave2Interactive = {
         const pairs = {
             boy_knight: {
                 before: 'assets/wave2/before_portrait_boy_knight.jpg',
-                after: 'assets/wave2/after_boy_knight.jpg'
+                after: 'assets/wave2/after_boy_knight_v2.jpg'
             },
             girl_fairy: {
                 before: 'assets/wave2/before_portrait_girl_fairy.jpg',
-                after: 'assets/wave2/after_girl_fairy.jpg'
+                after: 'assets/wave2/after_girl_fairy_v2.jpg'
             }
         };
 

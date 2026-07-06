@@ -32,6 +32,9 @@ const AwwwardsEffects = {
         this.initAmbientDust();
         this.initAmbientOrbs();
         this.initIdleFloat();
+        this.initHeroDome();
+        this.initMorphScrub();
+        this.initXXLWord();
     },
 
     // 1. Custom Cursor с хвостом-шлейфом (desktop only)
@@ -613,6 +616,130 @@ const AwwwardsEffects = {
             el.style.animationDelay = (i % 5) * 0.9 + 's';
             el.style.animationDuration = (6 + (i % 4)) + 's';
         });
+    },
+
+    // 19. Купол-созвездие из пыльцы над hero-заголовком (сцена A, стиль Dala)
+    initHeroDome() {
+        const hero = document.querySelector('.hero');
+        if (!hero) return;
+        const canvas = document.createElement('canvas');
+        canvas.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:3;';
+        hero.appendChild(canvas);
+        const ctx = canvas.getContext('2d');
+        let W, H;
+        const resize = () => { W = canvas.width = hero.offsetWidth; H = canvas.height = hero.offsetHeight; };
+        resize();
+        addEventListener('resize', resize);
+
+        const lowEnd = (navigator.hardwareConcurrency || 4) <= 4 || innerWidth < 500;
+        const N = lowEnd ? 380 : 900;
+        const parts = [];
+        for (let i = 0; i < N; i++) {
+            // Цель: дуга-купол над контентом. Угол по полукругу, радиус с разбросом.
+            const th = Math.PI * (0.08 + Math.random() * 0.84);
+            const rr = 0.34 + Math.random() * 0.1;
+            const violet = Math.random() < 0.12;
+            const teal = !violet && Math.random() < 0.06;
+            parts.push({
+                x: Math.random(), y: Math.random(),
+                vx: 0, vy: 0,
+                tx: 0.5 + Math.cos(th) * rr * 1.15,
+                ty: 0.44 - Math.sin(th) * rr,
+                s: 0.8 + Math.random() * 2,
+                hue: violet ? 268 : teal ? 180 : 40 + Math.random() * 14,
+                sat: violet || teal ? 55 : 68,
+                ph: Math.random() * Math.PI * 2,
+            });
+        }
+
+        let px = -9, py = -9;
+        hero.addEventListener('pointermove', e => {
+            const r = hero.getBoundingClientRect();
+            px = (e.clientX - r.left) / W;
+            py = (e.clientY - r.top) / H;
+        }, { passive: true });
+        hero.addEventListener('pointerleave', () => { px = py = -9; });
+
+        const born = performance.now();
+        const tick = () => {
+            // Купол рисуем только пока hero на экране
+            if (hero.getBoundingClientRect().bottom < 0) { requestAnimationFrame(tick); return; }
+            const age = Math.min(1, (performance.now() - born) / 2600);
+            const t = performance.now() * 0.001;
+            ctx.clearRect(0, 0, W, H);
+            for (const p of parts) {
+                const wob = Math.sin(t * 0.8 + p.ph) * 0.004;
+                p.vx += (p.tx + wob - p.x) * 0.0022 * (0.2 + age);
+                p.vy += (p.ty + wob * 0.6 - p.y) * 0.0022 * (0.2 + age);
+                const dx = p.x - px, dy = p.y - py;
+                const d2 = dx * dx + dy * dy;
+                if (d2 < 0.018) { p.vx += dx / d2 * 0.00035; p.vy += dy / d2 * 0.00035; }
+                p.vx *= 0.9; p.vy *= 0.9;
+                p.x += p.vx; p.y += p.vy;
+                const X = p.x * W, Y = p.y * H, s = p.s;
+                ctx.globalAlpha = (0.25 + age * 0.55) * (0.6 + 0.4 * Math.sin(t * 1.3 + p.ph * 2));
+                ctx.fillStyle = `hsl(${p.hue}, ${p.sat}%, ${60 + (p.s * 9 | 0)}%)`;
+                ctx.beginPath();
+                ctx.moveTo(X, Y - s);
+                ctx.lineTo(X + s, Y + s);
+                ctx.lineTo(X - s, Y + s);
+                ctx.closePath();
+                ctx.fill();
+            }
+            requestAnimationFrame(tick);
+        };
+        tick();
+    },
+
+    // 20. Скролл-морф «до/после» (сцена B): шторка едет от скролла + светящаяся линия
+    initMorphScrub() {
+        const container = document.querySelector('.before-after-container');
+        const slider = container && container.querySelector('.before-after-slider');
+        const beforeImg = container && container.querySelector('.before-img');
+        if (!container || !slider || !beforeImg) return;
+
+        let userTouched = false;
+        container.addEventListener('pointerdown', () => userTouched = true, { once: true });
+
+        const proxy = { p: 8 };
+        gsap.to(proxy, {
+            p: 92,
+            ease: 'none',
+            scrollTrigger: {
+                trigger: container,
+                start: 'top 85%',
+                end: 'bottom 25%',
+                scrub: 0.6,
+            },
+            onUpdate: () => {
+                if (userTouched) return; // клиент взял управление — не мешаем
+                slider.style.left = proxy.p + '%';
+                beforeImg.style.clipPath = `inset(0 ${100 - proxy.p}% 0 0)`;
+            }
+        });
+
+        // Светящаяся золотая линия на границе морфа
+        slider.style.boxShadow = '0 0 18px 3px rgba(240,205,138,0.8), 0 0 46px 8px rgba(212,168,83,0.35)';
+    },
+
+    // 21. XXL-слово с живым золотом (сцена D) — скейл от скролла
+    initXXLWord() {
+        const word = document.querySelector('.xxl-word');
+        if (!word) return;
+        gsap.fromTo(word,
+            { scale: 0.7, letterSpacing: '-0.04em' },
+            {
+                scale: 1.15,
+                letterSpacing: '0.02em',
+                ease: 'none',
+                scrollTrigger: {
+                    trigger: word.parentElement,
+                    start: 'top bottom',
+                    end: 'bottom top',
+                    scrub: 0.8,
+                }
+            }
+        );
     },
 
     // 9. Noise-текстура overlay

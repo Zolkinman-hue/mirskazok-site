@@ -1354,6 +1354,37 @@
             100% { opacity: 0; transform: scale(1.12, 1.6); }
         }
 
+        /* === Сцена D: XXL-слово с расплавленным золотом === */
+        .xxl-divider {
+            overflow: hidden;
+            padding: clamp(30px, 8vh, 90px) 0;
+            background: #080610;
+            display: flex;
+            justify-content: center;
+        }
+
+        .xxl-word {
+            font-family: var(--font-display);
+            font-size: clamp(4rem, 19vw, 14rem);
+            font-weight: 900;
+            line-height: 1;
+            white-space: nowrap;
+            background-image:
+                radial-gradient(circle at 30% 30%, #f7e3b0, transparent 40%),
+                radial-gradient(circle at 70% 65%, #d4a853, transparent 45%),
+                linear-gradient(140deg, #8a6a2c, #f0cd8a, #b8862f);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: xxlGold 7s ease-in-out infinite alternate;
+            will-change: transform;
+        }
+
+        @keyframes xxlGold {
+            to { background-position: 100% 100%; }
+        }
+
         /* === Ambient motion: весь сайт живёт (стиль Dala/refero) === */
 
         /* Дрейфующие свечения в фоне секций */
@@ -1770,7 +1801,7 @@
                 <div class="before-after-container">
                     <div class="before-after-wrapper">
                         <img src="assets/wave2/before_portrait_boy_knight.jpg" alt="Реальное фото мальчика" class="before-img">
-                        <img src="assets/wave2/after_boy_knight.jpg" alt="Мальчик-рыцарь в Pixar-стиле" class="after-img">
+                        <img src="assets/wave2/after_boy_knight_v2.jpg" alt="Мальчик-рыцарь в Pixar-стиле" class="after-img">
                         <div class="before-after-slider" style="left: 50%">
                             <div class="slider-handle">
                                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1781,11 +1812,11 @@
                     </div>
                     <div class="transform-gallery">
                         <button class="transform-thumb active" data-pair="boy_knight">
-                            <img src="assets/wave2/after_boy_knight.jpg" alt="Мальчик-рыцарь">
+                            <img src="assets/wave2/after_boy_knight_v2.jpg" alt="Мальчик-рыцарь">
                             <span>Мальчик-рыцарь</span>
                         </button>
                         <button class="transform-thumb" data-pair="girl_fairy">
-                            <img src="assets/wave2/after_girl_fairy.jpg" alt="Девочка-фея">
+                            <img src="assets/wave2/after_girl_fairy_v2.jpg" alt="Девочка-фея">
                             <span>Девочка-фея</span>
                         </button>
                     </div>
@@ -1892,6 +1923,11 @@
                 </div>
             </div>
         </section>
+
+        <!-- XXL kinetic word (сцена D) -->
+        <div class="xxl-divider" aria-hidden="true">
+            <div class="xxl-word">СКАЗКА</div>
+        </div>
 
         <!-- Book Preview -->
         <section class="book-preview">
