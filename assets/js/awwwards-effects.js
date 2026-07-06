@@ -7,6 +7,10 @@ const AwwwardsEffects = {
     init() {
         if (window.prefersReducedMotion) {
             console.log('[A11Y] Reduced motion mode: advanced effects disabled');
+            // Счётчики без анимации — сразу финальные значения
+            document.querySelectorAll('[data-count]').forEach(el => {
+                el.textContent = parseFloat(el.dataset.count).toFixed(parseInt(el.dataset.dec || 0));
+            });
             return;
         }
 
@@ -22,6 +26,9 @@ const AwwwardsEffects = {
         this.initTouchRipple();
         this.initReviewsNudge();
         this.initHeroParallaxLayers();
+        this.initKineticHeadings();
+        this.initFairyDust();
+        this.initSpringCounters();
     },
 
     // 1. Custom Cursor с хвостом-шлейфом (desktop only)
@@ -231,7 +238,7 @@ const AwwwardsEffects = {
 
     // 5. 3D Tilt эффект на карточках
     init3DTiltCards() {
-        const cards = document.querySelectorAll('.catalog-card, .style-showcase-card');
+        const cards = document.querySelectorAll('.catalog-card, .style-showcase-card, .pricing-card');
 
         cards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
@@ -429,6 +436,82 @@ const AwwwardsEffects = {
                 scrollTrigger: { trigger: '.hero', start: 'top top', end: 'bottom top', scrub: 1.2 }
             });
         });
+    },
+
+    // 13. Kinetic-заголовки: слова проявляются из blur при скролле
+    initKineticHeadings() {
+        document.querySelectorAll('.section-header h2').forEach(h => {
+            const hadGradient = h.classList.contains('text-gradient');
+            const words = h.textContent.trim().split(/\s+/);
+            if (!words.length) return;
+            // Градиент переносим на слова: transform на детях ломает background-clip родителя
+            if (hadGradient) h.classList.remove('text-gradient');
+            h.innerHTML = words.map(w =>
+                `<span class="kin-word" style="opacity:0">${w}</span>`
+            ).join(' ');
+
+            gsap.to(h.querySelectorAll('.kin-word'), {
+                opacity: 1,
+                y: 0,
+                filter: 'blur(0px)',
+                duration: 0.7,
+                stagger: 0.09,
+                ease: 'power3.out',
+                startAt: { opacity: 0, y: 22, filter: 'blur(8px)' },
+                scrollTrigger: { trigger: h, start: 'top 85%' }
+            });
+        });
+    },
+
+    // 14. Волшебная пыльца за пальцем/курсором в hero
+    initFairyDust() {
+        const hero = document.querySelector('.hero');
+        if (!hero) return;
+        let last = 0;
+        let alive = 0;
+        const MAX_ALIVE = 40; // потолок частиц для слабых телефонов
+        hero.addEventListener('pointermove', (e) => {
+            const now = performance.now();
+            if (now - last < 30 || alive >= MAX_ALIVE) return;
+            last = now;
+            const rect = hero.getBoundingClientRect();
+            for (let i = 0; i < 2; i++) {
+                const d = document.createElement('span');
+                d.className = 'fairy-dust';
+                const size = 4 + Math.random() * 6;
+                d.style.width = d.style.height = size + 'px';
+                d.style.left = (e.clientX - rect.left + (Math.random() - 0.5) * 18) + 'px';
+                d.style.top = (e.clientY - rect.top + (Math.random() - 0.5) * 18) + 'px';
+                hero.appendChild(d);
+                alive++;
+                d.addEventListener('animationend', () => { d.remove(); alive--; });
+            }
+        }, { passive: true });
+    },
+
+    // 15. Пружинные счётчики цифр (stats-row в каталоге)
+    initSpringCounters() {
+        const els = document.querySelectorAll('[data-count]');
+        if (!els.length) return;
+        const io = new IntersectionObserver((entries) => {
+            entries.forEach(en => {
+                if (!en.isIntersecting) return;
+                const el = en.target;
+                io.unobserve(el);
+                const target = parseFloat(el.dataset.count);
+                const dec = parseInt(el.dataset.dec || 0);
+                const start = performance.now();
+                const dur = 1400;
+                (function tick(t) {
+                    const p = Math.min(1, (t - start) / dur);
+                    const s = 1 - Math.pow(1 - p, 3) * Math.cos(p * 4);
+                    el.textContent = (target * Math.min(s, 1)).toFixed(dec);
+                    if (p < 1) requestAnimationFrame(tick);
+                    else el.textContent = target.toFixed(dec);
+                })(start);
+            });
+        }, { threshold: 0.6 });
+        els.forEach(el => io.observe(el));
     },
 
     // 9. Noise-текстура overlay

@@ -1247,6 +1247,103 @@
             .comparison-icon { font-size: 1.5rem; }
         }
 
+        /* === UX-анимации 2026 (выбор владельца: 1,3,4,7,8,10) === */
+
+        /* 01. Kinetic-заголовки: слова проявляются из тумана (awwwards-effects.js) */
+        .kin-word {
+            display: inline-block;
+            background: linear-gradient(90deg, var(--color-gold), var(--color-gold-light));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* 03. Шиммер-блик на CTA */
+        .cta-btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-btn::after {
+            content: '';
+            position: absolute;
+            top: 0; left: -80%;
+            width: 55%; height: 100%;
+            background: linear-gradient(100deg, transparent, rgba(255,255,255,0.5), transparent);
+            transform: skewX(-20deg);
+            animation: ctaShimmer 3.2s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes ctaShimmer {
+            0%, 60% { left: -80%; }
+            90%, 100% { left: 135%; }
+        }
+
+        /* 07. Волшебная пыльца за пальцем в hero */
+        .fairy-dust {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 6;
+            background: radial-gradient(circle, #ffe9b0, var(--color-gold));
+            box-shadow: 0 0 8px 2px rgba(240,205,138,0.7);
+            animation: dustFade 0.9s ease-out forwards;
+        }
+
+        @keyframes dustFade {
+            to { transform: translateY(-34px) scale(0.1); opacity: 0; }
+        }
+
+        /* 08. Пружинные счётчики */
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: clamp(28px, 8vw, 64px);
+            margin: 8px 0 40px;
+        }
+
+        .stat-item { text-align: center; }
+
+        .stat-item .stat-val {
+            font-family: var(--font-display);
+            font-size: clamp(1.8rem, 5vw, 2.6rem);
+            font-weight: 800;
+            color: var(--color-gold);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .stat-item .stat-lbl {
+            color: var(--color-text-muted);
+            font-size: 0.85rem;
+        }
+
+        /* 10. Дышащая sticky-CTA с пульс-кольцом */
+        .sticky-cta a {
+            position: relative;
+            animation: ctaBreathe 2.4s ease-in-out infinite;
+        }
+
+        .sticky-cta a::before {
+            content: '';
+            position: absolute;
+            inset: -2px;
+            border-radius: 50px;
+            border: 2px solid var(--color-gold);
+            animation: ctaPulseRing 2.4s ease-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes ctaBreathe {
+            0%, 100% { box-shadow: 0 0 14px rgba(212,168,83,0.3); }
+            50% { box-shadow: 0 0 34px rgba(212,168,83,0.6); }
+        }
+
+        @keyframes ctaPulseRing {
+            0% { opacity: 0.7; transform: scale(1); }
+            100% { opacity: 0; transform: scale(1.12, 1.6); }
+        }
+
         /* Touch ripple: золотое свечение в точке касания (awwwards-effects.js) */
         .ripple-host {
             position: relative;
@@ -1655,6 +1752,12 @@
                 <div class="section-header">
                     <h2 class="text-gradient">Наши сказки</h2>
                     <p>Каждая история — уникальное приключение с вашим ребёнком в главной роли</p>
+                </div>
+
+                <div class="stats-row">
+                    <div class="stat-item"><div class="stat-val" data-count="23">0</div><div class="stat-lbl">сюжета</div></div>
+                    <div class="stat-item"><div class="stat-val" data-count="9">0</div><div class="stat-lbl">стилей</div></div>
+                    <div class="stat-item"><div class="stat-val" data-count="4.9" data-dec="1">0</div><div class="stat-lbl">рейтинг</div></div>
                 </div>
 
                 <div class="catalog-grid">
