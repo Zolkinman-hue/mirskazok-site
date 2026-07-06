@@ -636,21 +636,30 @@ const AwwwardsEffects = {
         const parts = [];
         for (let i = 0; i < N; i++) {
             // Цель: дуга-купол над контентом. Угол по полукругу, радиус с разбросом.
-            const th = Math.PI * (0.08 + Math.random() * 0.84);
-            const rr = 0.34 + Math.random() * 0.1;
+            const th = Math.PI * (0.06 + Math.random() * 0.88);
+            const rj = 0.86 + Math.random() * 0.28;
             const violet = Math.random() < 0.12;
             const teal = !violet && Math.random() < 0.06;
             parts.push({
                 x: Math.random(), y: Math.random(),
                 vx: 0, vy: 0,
-                tx: 0.5 + Math.cos(th) * rr * 1.15,
-                ty: 0.44 - Math.sin(th) * rr,
+                th, rj,
                 s: 0.8 + Math.random() * 2,
                 hue: violet ? 268 : teal ? 180 : 40 + Math.random() * 14,
                 sat: violet || teal ? 55 : 68,
                 ph: Math.random() * Math.PI * 2,
             });
         }
+
+        // Цели в пиксельном пространстве: дуга держит форму на любой ширине экрана
+        const domeTarget = (p) => {
+            const R = Math.min(W * 0.44, H * 0.36);
+            const cx = W / 2, cy = H * 0.42;
+            return {
+                x: (cx + Math.cos(p.th) * R * p.rj) / W,
+                y: (cy - Math.sin(p.th) * R * 0.72 * p.rj) / H,
+            };
+        };
 
         let px = -9, py = -9;
         hero.addEventListener('pointermove', e => {
@@ -668,9 +677,10 @@ const AwwwardsEffects = {
             const t = performance.now() * 0.001;
             ctx.clearRect(0, 0, W, H);
             for (const p of parts) {
+                const tgt = domeTarget(p);
                 const wob = Math.sin(t * 0.8 + p.ph) * 0.004;
-                p.vx += (p.tx + wob - p.x) * 0.0022 * (0.2 + age);
-                p.vy += (p.ty + wob * 0.6 - p.y) * 0.0022 * (0.2 + age);
+                p.vx += (tgt.x + wob - p.x) * 0.0022 * (0.2 + age);
+                p.vy += (tgt.y + wob * 0.6 - p.y) * 0.0022 * (0.2 + age);
                 const dx = p.x - px, dy = p.y - py;
                 const d2 = dx * dx + dy * dy;
                 if (d2 < 0.018) { p.vx += dx / d2 * 0.00035; p.vy += dy / d2 * 0.00035; }
