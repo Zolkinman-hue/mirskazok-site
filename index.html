@@ -1,0 +1,1777 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>МирСказок — Персональные детские книги с AI-иллюстрациями</title>
+    <meta name="description" content="Создайте уникальную сказку, где ваш ребёнок — главный герой. 23 волшебных сюжета, 9 стилей иллюстраций, персонализация по фото.">
+
+    <style>
+        @font-face {
+            font-family: 'Playfair Display';
+            src: url('assets/fonts/PlayfairDisplay-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Playfair Display';
+            src: url('assets/fonts/PlayfairDisplay-Bold.woff2') format('woff2');
+            font-weight: 700;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Inter';
+            src: url('assets/fonts/Inter-Regular.woff2') format('woff2');
+            font-weight: 400;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Inter';
+            src: url('assets/fonts/Inter-Medium.woff2') format('woff2');
+            font-weight: 500;
+            font-style: normal;
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Inter';
+            src: url('assets/fonts/Inter-SemiBold.woff2') format('woff2');
+            font-weight: 600;
+            font-style: normal;
+            font-display: swap;
+        }
+
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --color-bg: #0a0a12;
+            --color-bg-warm: #12101a;
+            --color-cream: #faf6f0;
+            --color-gold: #d4a853;
+            --color-gold-light: #f0d48a;
+            --color-text: #e8e4dc;
+            --color-text-muted: #9a9590;
+            --color-accent: #7c5ce7;
+            --font-display: 'Playfair Display', Georgia, serif;
+            --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        html {
+            scroll-behavior: auto;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .wrapper {
+            width: 100%;
+            overflow: hidden;
+        }
+
+        /* Stars background */
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle var(--duration, 3s) ease-in-out infinite;
+            animation-delay: var(--delay, 0s);
+        }
+
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.3; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.2); }
+        }
+
+        /* Section base */
+        section {
+            position: relative;
+            z-index: 1;
+            padding: 100px 24px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Typography */
+        h1, h2, h3 {
+            font-family: var(--font-display);
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        h1 { font-size: clamp(2.5rem, 8vw, 5rem); }
+        h2 { font-size: clamp(2rem, 5vw, 3.5rem); }
+        h3 { font-size: clamp(1.25rem, 3vw, 1.75rem); }
+
+        .text-gradient {
+            background: linear-gradient(135deg, var(--color-gold-light) 0%, var(--color-gold) 50%, var(--color-cream) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            background: radial-gradient(ellipse at 50% 0%, rgba(124, 92, 231, 0.15) 0%, transparent 60%),
+                        radial-gradient(ellipse at 80% 80%, rgba(212, 168, 83, 0.1) 0%, transparent 40%),
+                        var(--color-bg);
+            overflow: hidden;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+        }
+
+        .hero-badge {
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(212, 168, 83, 0.15);
+            border: 1px solid rgba(212, 168, 83, 0.3);
+            border-radius: 50px;
+            font-size: 0.875rem;
+            color: var(--color-gold-light);
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .hero h1 {
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+            color: var(--color-text-muted);
+            max-width: 600px;
+            margin: 0 auto 40px;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        /* CTA Button */
+        .cta-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            padding: 18px 40px;
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            color: var(--color-bg);
+            font-family: var(--font-body);
+            font-size: 1.125rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 60px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 30px rgba(212, 168, 83, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .cta-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 8px 40px rgba(212, 168, 83, 0.5);
+        }
+
+        .cta-btn svg {
+            width: 20px;
+            height: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .cta-btn:hover svg {
+            transform: translateX(4px);
+        }
+
+        /* Floating elements */
+        .hero-float {
+            position: absolute;
+            pointer-events: none;
+            opacity: 0;
+        }
+
+        .hero-float-1 {
+            top: 15%;
+            left: 10%;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, rgba(212, 168, 83, 0.3) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-float-2 {
+            top: 60%;
+            right: 8%;
+            width: 120px;
+            height: 120px;
+            background: radial-gradient(circle, rgba(124, 92, 231, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 8s ease-in-out infinite reverse;
+        }
+
+        .hero-float-3 {
+            bottom: 20%;
+            left: 15%;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, rgba(212, 168, 83, 0.2) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 5s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+        }
+
+        .hero-image {
+            position: absolute;
+            right: 5%;
+            bottom: 10%;
+            width: 35%;
+            max-width: 450px;
+            opacity: 0;
+            transform: translateX(50px);
+            z-index: 1;
+        }
+
+        .hero-image img {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.4);
+        }
+
+        .hero-trust {
+            display: flex;
+            gap: 16px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+            justify-content: center;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .trust-badge {
+            padding: 8px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            color: var(--color-text-muted);
+        }
+
+        @media (max-width: 900px) {
+            .hero-image {
+                display: none;
+            }
+        }
+
+        /* Sticky mobile CTA */
+        .sticky-cta {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 12px 16px;
+            background: rgba(10, 10, 18, 0.95);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            z-index: 1000;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+        }
+
+        .sticky-cta.visible {
+            transform: translateY(0);
+        }
+
+        .sticky-cta a {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            color: var(--color-bg);
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 50px;
+        }
+
+        @media (max-width: 768px) {
+            .sticky-cta {
+                display: block;
+            }
+        }
+
+        /* Emotions section */
+        .emotions {
+            background: var(--color-bg);
+            padding: 100px 24px;
+        }
+
+        .emotions-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .emotion-card {
+            border-radius: 16px;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .emotion-card.large {
+            grid-row: span 2;
+        }
+
+        .emotion-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .emotion-card:hover img {
+            transform: scale(1.05);
+        }
+
+        @media (max-width: 600px) {
+            .emotions-grid {
+                grid-template-columns: 1fr;
+            }
+            .emotion-card.large {
+                grid-row: auto;
+            }
+        }
+
+        /* Section Headers */
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            margin-bottom: 16px;
+        }
+
+        .section-header p {
+            color: var(--color-text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.125rem;
+        }
+
+        /* How It Works */
+        .how-it-works {
+            background: var(--color-bg-warm);
+        }
+
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .step {
+            text-align: center;
+            padding: 40px 24px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            color: var(--color-bg);
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            font-weight: 700;
+            border-radius: 50%;
+            margin-bottom: 24px;
+        }
+
+        .step h3 {
+            margin-bottom: 12px;
+            color: var(--color-cream);
+        }
+
+        .step p {
+            color: var(--color-text-muted);
+        }
+
+        /* Catalog / Gallery */
+        .catalog {
+            background: var(--color-bg);
+        }
+
+        .catalog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .catalog-card {
+            position: relative;
+            border-radius: 16px;
+            overflow: hidden;
+            aspect-ratio: 16/9;
+            cursor: pointer;
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .catalog-card:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+        }
+
+        .catalog-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s ease;
+        }
+
+        .catalog-card:hover img {
+            transform: scale(1.08);
+        }
+
+        .catalog-card-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 60px 20px 20px;
+            background: linear-gradient(to top, rgba(10, 10, 18, 0.9) 0%, transparent 100%);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .catalog-card:hover .catalog-card-overlay {
+            opacity: 1;
+        }
+
+        .catalog-card-title {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            color: var(--color-cream);
+        }
+
+        /* Book Preview / Flip Section */
+        .book-preview {
+            background: linear-gradient(180deg, var(--color-bg-warm) 0%, var(--color-bg) 100%);
+            padding: 100px 24px 120px;
+        }
+
+        .book-slider {
+            position: relative;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .book-spread {
+            position: relative;
+            width: 100%;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            transform: scale(0.9);
+        }
+
+        .book-spread img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .book-nav {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .book-nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .book-nav-dot.active {
+            background: var(--color-gold);
+            transform: scale(1.2);
+        }
+
+        .book-arrows {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 -60px;
+            pointer-events: none;
+        }
+
+        .book-arrow {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.3s ease;
+            position: relative;
+            left: -60px;
+        }
+
+        .book-arrow:last-child {
+            left: auto;
+            right: -60px;
+        }
+
+        .book-arrow:hover {
+            background: var(--color-gold);
+            border-color: var(--color-gold);
+        }
+
+        .book-arrow svg {
+            width: 20px;
+            height: 20px;
+            fill: var(--color-cream);
+        }
+
+        /* Styles Section */
+        .styles {
+            background: var(--color-bg);
+        }
+
+        .styles-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 16px;
+        }
+
+        .style-chip {
+            padding: 12px 28px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            font-size: 1rem;
+            color: var(--color-text);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .style-chip:hover {
+            background: rgba(212, 168, 83, 0.15);
+            border-color: var(--color-gold);
+            color: var(--color-gold-light);
+            transform: translateY(-3px);
+        }
+
+        /* Pricing */
+        .pricing {
+            background: var(--color-bg-warm);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 24px;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+            opacity: 0;
+            transform: translateY(40px);
+            transition: transform 0.4s ease, border-color 0.4s ease;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            border-color: rgba(212, 168, 83, 0.3);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--color-gold);
+            background: linear-gradient(180deg, rgba(212, 168, 83, 0.08) 0%, transparent 100%);
+        }
+
+        .pricing-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 6px 20px;
+            background: var(--color-gold);
+            color: var(--color-bg);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-radius: 20px;
+        }
+
+        .pricing-title {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+            color: var(--color-cream);
+        }
+
+        .pricing-desc {
+            color: var(--color-text-muted);
+            margin-bottom: 24px;
+            font-size: 0.95rem;
+        }
+
+        .pricing-price {
+            font-family: var(--font-display);
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--color-gold-light);
+            margin-bottom: 8px;
+        }
+
+        .pricing-price span {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--color-text-muted);
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin: 24px 0;
+        }
+
+        .pricing-features li {
+            padding: 8px 0;
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .pricing-features li::before {
+            content: '';
+            width: 20px;
+            height: 20px;
+            background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23d4a853'%3E%3Cpath d='M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'/%3E%3C/svg%3E") center/contain no-repeat;
+            flex-shrink: 0;
+        }
+
+        .pricing-cta {
+            display: block;
+            width: 100%;
+            padding: 16px;
+            background: transparent;
+            border: 2px solid var(--color-gold);
+            color: var(--color-gold-light);
+            font-size: 1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-cta:hover {
+            background: var(--color-gold);
+            color: var(--color-bg);
+        }
+
+        .pricing-card.featured .pricing-cta {
+            background: var(--color-gold);
+            color: var(--color-bg);
+        }
+
+        .pricing-card.featured .pricing-cta:hover {
+            background: var(--color-gold-light);
+        }
+
+        /* Reviews Marquee */
+        .reviews {
+            background: var(--color-bg);
+            padding: 80px 0;
+            overflow: hidden;
+        }
+
+        .marquee {
+            display: flex;
+            gap: 24px;
+            animation: marquee 40s linear infinite;
+        }
+
+        .marquee:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .review-card {
+            flex-shrink: 0;
+            width: 350px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+        }
+
+        .review-stars {
+            color: var(--color-gold);
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+        }
+
+        .review-text {
+            color: var(--color-text);
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .review-author {
+            color: var(--color-text-muted);
+            font-size: 0.875rem;
+        }
+
+        /* FAQ */
+        .faq {
+            background: var(--color-bg-warm);
+        }
+
+        .faq-list {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .faq-question {
+            width: 100%;
+            padding: 24px 0;
+            background: none;
+            border: none;
+            text-align: left;
+            font-family: var(--font-body);
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: var(--color-cream);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .faq-question::after {
+            content: '+';
+            font-size: 1.5rem;
+            color: var(--color-gold);
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.4s ease;
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 300px;
+            padding-bottom: 24px;
+        }
+
+        .faq-answer p {
+            color: var(--color-text-muted);
+            line-height: 1.7;
+        }
+
+        /* Final CTA */
+        .final-cta {
+            background: radial-gradient(ellipse at 50% 100%, rgba(124, 92, 231, 0.2) 0%, transparent 60%),
+                        var(--color-bg);
+            text-align: center;
+            padding: 120px 24px;
+        }
+
+        .final-cta h2 {
+            margin-bottom: 20px;
+        }
+
+        .final-cta p {
+            color: var(--color-text-muted);
+            font-size: 1.25rem;
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--color-bg-warm);
+            padding: 60px 24px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto 40px;
+        }
+
+        .footer-brand h3 {
+            font-family: var(--font-display);
+            font-size: 1.5rem;
+            color: var(--color-cream);
+            margin-bottom: 12px;
+        }
+
+        .footer-brand p {
+            color: var(--color-text-muted);
+            font-size: 0.95rem;
+        }
+
+        .footer-col h4 {
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--color-text-muted);
+            margin-bottom: 16px;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col li {
+            margin-bottom: 10px;
+        }
+
+        .footer-col a {
+            color: var(--color-text);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        .footer-col a:hover {
+            color: var(--color-gold-light);
+        }
+
+        .footer-bottom {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+
+        .footer-legal {
+            color: var(--color-text-muted);
+            font-size: 0.8rem;
+        }
+
+        .footer-legal a {
+            color: var(--color-text-muted);
+            text-decoration: underline;
+        }
+
+        .footer-requisites {
+            color: var(--color-text-muted);
+            font-size: 0.75rem;
+            text-align: right;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .book-arrow {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+            section {
+                padding: 60px 16px;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .footer-requisites {
+                text-align: center;
+            }
+
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .catalog-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding: 80px 16px;
+            }
+
+            .cta-btn {
+                padding: 16px 32px;
+                font-size: 1rem;
+            }
+        }
+
+        /* Reduced motion */
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+
+            .marquee {
+                animation: none;
+            }
+
+            html {
+                scroll-behavior: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrapper">
+        <!-- Stars background -->
+        <div class="stars" id="stars"></div>
+
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-float hero-float-1"></div>
+            <div class="hero-float hero-float-2"></div>
+            <div class="hero-float hero-float-3"></div>
+            <div class="hero-image">
+                <img src="assets/lifestyle/reading_together.jpg" alt="Мама читает книгу с дочкой" loading="eager">
+            </div>
+
+            <div class="hero-content">
+                <div class="hero-badge">Сотни счастливых семей</div>
+                <h1><span class="text-gradient">Ваш ребёнок —</span><br>главный герой сказки</h1>
+                <p class="hero-subtitle">Создаём уникальные персональные книги с AI-иллюстрациями, где каждая страница оживает лицом вашего малыша</p>
+                <a href="https://t.me/Skazochk1_bot" class="cta-btn" id="heroCta">
+                    Создать книгу
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+                <div class="hero-trust">
+                    <span class="trust-badge">Превью бесплатно</span>
+                    <span class="trust-badge">Оплата ЮKassa</span>
+                    <span class="trust-badge">Поддержка 24/7</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="how-it-works">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="text-gradient">Как это работает</h2>
+                    <p>Всего 4 простых шага до волшебства</p>
+                </div>
+
+                <div class="steps">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h3>Выберите сказку</h3>
+                        <p>23 уникальных сюжета: от космических приключений до волшебного леса</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h3>Загрузите фото</h3>
+                        <p>Одно качественное фото лица ребёнка — AI сохранит все черты</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h3>Выберите стиль</h3>
+                        <p>9 стилей иллюстраций: от Pixar до акварели и советской мультипликации</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">4</div>
+                        <h3>Получите книгу</h3>
+                        <p>PDF за 3-5 дней или печатную книгу премиум-качества</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Catalog -->
+        <section class="catalog">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="text-gradient">Наши сказки</h2>
+                    <p>Каждая история — уникальное приключение с вашим ребёнком в главной роли</p>
+                </div>
+
+                <div class="catalog-grid">
+                    <div class="catalog-card">
+                        <img src="assets/generated/book_knight.jpg" alt="Рыцарь и Меч Света" loading="lazy">
+                        <div class="catalog-card-overlay">
+                            <div class="catalog-card-title">Рыцарь и Меч Света</div>
+                        </div>
+                    </div>
+                    <div class="catalog-card">
+                        <img src="assets/generated/book_forest.jpg" alt="Тайны волшебного леса" loading="lazy">
+                        <div class="catalog-card-overlay">
+                            <div class="catalog-card-title">Тайны волшебного леса</div>
+                        </div>
+                    </div>
+                    <div class="catalog-card">
+                        <img src="assets/generated/book_space.jpg" alt="Космическое путешествие" loading="lazy">
+                        <div class="catalog-card-overlay">
+                            <div class="catalog-card-title">Космическое путешествие</div>
+                        </div>
+                    </div>
+                    <div class="catalog-card">
+                        <img src="assets/generated/book_ocean.jpg" alt="Подводное царство" loading="lazy">
+                        <div class="catalog-card-overlay">
+                            <div class="catalog-card-title">Подводное царство</div>
+                        </div>
+                    </div>
+                    <div class="catalog-card">
+                        <img src="assets/generated/book_ball.jpg" alt="Бал принцессы" loading="lazy">
+                        <div class="catalog-card-overlay">
+                            <div class="catalog-card-title">Бал принцессы</div>
+                        </div>
+                    </div>
+                    <div class="catalog-card">
+                        <img src="assets/generated/book_dino.jpg" alt="В мире динозавров" loading="lazy">
+                        <div class="catalog-card-overlay">
+                            <div class="catalog-card-title">В мире динозавров</div>
+                        </div>
+                    </div>
+                    <div class="catalog-card">
+                        <img src="assets/covers/academy_Мия.jpg" alt="Академия волшебства" loading="lazy">
+                        <div class="catalog-card-overlay">
+                            <div class="catalog-card-title">Академия волшебства</div>
+                        </div>
+                    </div>
+                    <div class="catalog-card">
+                        <img src="assets/covers/newyear_Настя.jpg" alt="Новогоднее чудо" loading="lazy">
+                        <div class="catalog-card-overlay">
+                            <div class="catalog-card-title">Новогоднее чудо</div>
+                        </div>
+                    </div>
+                    <div class="catalog-card">
+                        <img src="assets/covers/birthday_Ника.jpg" alt="Волшебный день рождения" loading="lazy">
+                        <div class="catalog-card-overlay">
+                            <div class="catalog-card-title">Волшебный день рождения</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Emotions / Social Proof -->
+        <section class="emotions">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="text-gradient">Настоящие эмоции</h2>
+                    <p>Книга становится любимой с первой секунды</p>
+                </div>
+
+                <div class="emotions-grid">
+                    <div class="emotion-card large">
+                        <img src="assets/lifestyle/hugging_book.jpg" alt="Ребёнок обнимает книгу" loading="lazy">
+                    </div>
+                    <div class="emotion-card">
+                        <img src="assets/lifestyle/reading_armchair.jpg" alt="Ребёнок читает в кресле" loading="lazy">
+                    </div>
+                    <div class="emotion-card">
+                        <img src="assets/lifestyle/unboxing_gift.jpg" alt="Распаковка подарка" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Book Preview -->
+        <section class="book-preview">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="text-gradient">Загляните внутрь</h2>
+                    <p>Каждый разворот — произведение искусства с вашим ребёнком</p>
+                </div>
+
+                <div class="book-slider">
+                    <div class="book-spread" id="bookSpread">
+                        <img src="assets/spreads/spread_forest_01.jpg" alt="Разворот книги" id="spreadImg">
+                    </div>
+                    <div class="book-arrows">
+                        <button class="book-arrow" id="prevSpread">
+                            <svg viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+                        </button>
+                        <button class="book-arrow" id="nextSpread">
+                            <svg viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></svg>
+                        </button>
+                    </div>
+                    <div class="book-nav" id="bookNav">
+                        <button class="book-nav-dot active" data-index="0"></button>
+                        <button class="book-nav-dot" data-index="1"></button>
+                        <button class="book-nav-dot" data-index="2"></button>
+                        <button class="book-nav-dot" data-index="3"></button>
+                        <button class="book-nav-dot" data-index="4"></button>
+                        <button class="book-nav-dot" data-index="5"></button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Styles -->
+        <section class="styles">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="text-gradient">9 стилей иллюстраций</h2>
+                    <p>Выберите визуальный стиль, который понравится вашему ребёнку</p>
+                </div>
+
+                <div class="styles-list">
+                    <div class="style-chip">Pixar / Disney</div>
+                    <div class="style-chip">Акварель</div>
+                    <div class="style-chip">Советская мультипликация</div>
+                    <div class="style-chip">Аниме</div>
+                    <div class="style-chip">Книжная классика</div>
+                    <div class="style-chip">Сказочный реализм</div>
+                    <div class="style-chip">Пастель</div>
+                    <div class="style-chip">Яркий детский</div>
+                    <div class="style-chip">Мягкий 3D</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pricing -->
+        <section class="pricing">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="text-gradient">Тарифы</h2>
+                    <p>Выберите формат, который подходит именно вам</p>
+                </div>
+
+                <div class="pricing-grid">
+                    <div class="pricing-card">
+                        <div class="pricing-title">PDF-книга</div>
+                        <div class="pricing-desc">Цифровая версия для чтения на любом устройстве</div>
+                        <div class="pricing-price">3 500 <span>руб.</span></div>
+                        <ul class="pricing-features">
+                            <li>10 разворотов с иллюстрациями</li>
+                            <li>Персонализация по фото</li>
+                            <li>Имя ребёнка в сюжете</li>
+                            <li>Готовность 3-5 дней</li>
+                            <li>Формат PDF A3</li>
+                        </ul>
+                        <a href="https://t.me/Skazochk1_bot" class="pricing-cta">Заказать</a>
+                    </div>
+
+                    <div class="pricing-card featured">
+                        <div class="pricing-badge">Популярный</div>
+                        <div class="pricing-title">Печатная книга</div>
+                        <div class="pricing-desc">Настоящая книга в твёрдом переплёте</div>
+                        <div class="pricing-price">5 000 <span>руб.</span></div>
+                        <ul class="pricing-features">
+                            <li>Всё из PDF-тарифа</li>
+                            <li>Печать на премиум-бумаге</li>
+                            <li>Твёрдый переплёт 20x20 см</li>
+                            <li>Доставка по России</li>
+                            <li>Готовность 7 дней + доставка</li>
+                        </ul>
+                        <a href="https://t.me/Skazochk1_bot" class="pricing-cta">Заказать</a>
+                    </div>
+
+                    <div class="pricing-card">
+                        <div class="pricing-title">Премиум</div>
+                        <div class="pricing-desc">Максимум персонализации и качества</div>
+                        <div class="pricing-price">7 500 <span>руб.</span></div>
+                        <ul class="pricing-features">
+                            <li>Всё из печатного тарифа</li>
+                            <li>Расширенный формат 20x28 см</li>
+                            <li>Дополнительные персонажи</li>
+                            <li>Приоритетное создание</li>
+                            <li>Индивидуальные правки</li>
+                        </ul>
+                        <a href="https://t.me/Skazochk1_bot" class="pricing-cta">Заказать</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reviews -->
+        <section class="reviews">
+            <div class="section-header">
+                <h2 class="text-gradient">Отзывы родителей</h2>
+            </div>
+            <div class="marquee">
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Дочка в восторге! Не выпускает книгу из рук, показывает всем гостям. Качество печати превзошло ожидания»</p>
+                    <div class="review-author">— Анна, мама Софии (5 лет)</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Лучший подарок на день рождения! Сын был в шоке, когда увидел себя рыцарем. Теперь это его любимая книга»</p>
+                    <div class="review-author">— Михаил, папа Артёма (7 лет)</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Заказывали книгу про космос. AI невероятно точно передал черты лица ребёнка. Спасибо за волшебство!»</p>
+                    <div class="review-author">— Елена, мама Марка (6 лет)</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Читаем каждый вечер перед сном. Дочка просит "ту самую книгу про неё". Трогательно до слёз»</p>
+                    <div class="review-author">— Ольга, мама Вари (4 года)</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Подарили бабушке книгу "Лучшая бабушка" с её фото и внуками. Расплакалась от счастья»</p>
+                    <div class="review-author">— Ирина, внучка</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Профессиональный подход, быстрая работа. Книга пришла раньше срока и в идеальном состоянии»</p>
+                    <div class="review-author">— Дмитрий, папа Лёвы (5 лет)</div>
+                </div>
+                <!-- Duplicate for seamless loop -->
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Дочка в восторге! Не выпускает книгу из рук, показывает всем гостям. Качество печати превзошло ожидания»</p>
+                    <div class="review-author">— Анна, мама Софии (5 лет)</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Лучший подарок на день рождения! Сын был в шоке, когда увидел себя рыцарем. Теперь это его любимая книга»</p>
+                    <div class="review-author">— Михаил, папа Артёма (7 лет)</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Заказывали книгу про космос. AI невероятно точно передал черты лица ребёнка. Спасибо за волшебство!»</p>
+                    <div class="review-author">— Елена, мама Марка (6 лет)</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Читаем каждый вечер перед сном. Дочка просит "ту самую книгу про неё". Трогательно до слёз»</p>
+                    <div class="review-author">— Ольга, мама Вари (4 года)</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Подарили бабушке книгу "Лучшая бабушка" с её фото и внуками. Расплакалась от счастья»</p>
+                    <div class="review-author">— Ирина, внучка</div>
+                </div>
+                <div class="review-card">
+                    <div class="review-stars">★★★★★</div>
+                    <p class="review-text">«Профессиональный подход, быстрая работа. Книга пришла раньше срока и в идеальном состоянии»</p>
+                    <div class="review-author">— Дмитрий, папа Лёвы (5 лет)</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section class="faq">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="text-gradient">Частые вопросы</h2>
+                </div>
+
+                <div class="faq-list">
+                    <div class="faq-item">
+                        <button class="faq-question">Как работает персонализация по фото?</button>
+                        <div class="faq-answer">
+                            <p>Вы загружаете одно качественное фото лица ребёнка (анфас, хорошее освещение). Наш AI анализирует черты лица и интегрирует их во все иллюстрации книги, сохраняя узнаваемость на каждой странице.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Сколько времени занимает создание книги?</button>
+                        <div class="faq-answer">
+                            <p>PDF-версия готовится 3-5 рабочих дней. Печатная книга — 7 дней на создание + время доставки (зависит от региона, обычно 3-10 дней).</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Можно ли добавить нескольких детей в одну книгу?</button>
+                        <div class="faq-answer">
+                            <p>Да, в премиум-тарифе можно добавить дополнительных персонажей — братьев, сестёр или друзей. Каждый будет узнаваем по своему фото.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Какой формат и качество печати?</button>
+                        <div class="faq-answer">
+                            <p>Стандартный формат 20x20 см, премиум — 20x28 см. Печать на плотной матовой бумаге 170 г/м², твёрдый ламинированный переплёт. Качество как у профессиональных детских изданий.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Как оплатить заказ?</button>
+                        <div class="faq-answer">
+                            <p>Оплата производится онлайн через безопасный платёжный шлюз ЮKassa. Принимаем карты Visa, MasterCard, МИР, а также СБП.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-question">Есть ли доставка по всей России?</button>
+                        <div class="faq-answer">
+                            <p>Да, доставляем по всей России курьерскими службами СДЭК и Почтой России. Стоимость доставки рассчитывается при оформлении заказа.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Final CTA -->
+        <section class="final-cta">
+            <div class="container">
+                <h2 class="text-gradient">Подарите ребёнку<br>его собственную сказку</h2>
+                <p>Начните создание книги прямо сейчас — это займёт всего 5 минут</p>
+                <a href="https://t.me/Skazochk1_bot" class="cta-btn" style="opacity: 1; transform: none;">
+                    Создать книгу в Telegram
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M5 12h14M12 5l7 7-7 7"/>
+                    </svg>
+                </a>
+            </div>
+        </section>
+
+        <!-- Sticky Mobile CTA -->
+        <div class="sticky-cta" id="stickyCta">
+            <a href="https://t.me/Skazochk1_bot">Создать книгу</a>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <h3>МирСказок</h3>
+                    <p>Персональные детские книги с AI-иллюстрациями. Создаём волшебство с 2024 года.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Контакты</h4>
+                    <ul>
+                        <li><a href="https://t.me/Skazochk1_bot">Бот @Skazochk1_bot</a></li>
+                        <li><a href="https://t.me/skazkaadm">Поддержка @skazkaadm</a></li>
+                        <li><a href="mailto:zolkinman@yandex.ru">zolkinman@yandex.ru</a></li>
+                        <li><a href="tel:+79775874882">+7 977 587-48-82</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Информация</h4>
+                    <ul>
+                        <li><a href="#how-it-works">Как это работает</a></li>
+                        <li><a href="#catalog">Каталог сказок</a></li>
+                        <li><a href="#pricing">Тарифы</a></li>
+                        <li><a href="#faq">Вопросы и ответы</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Документы</h4>
+                    <ul>
+                        <li><a href="https://zolkinman-hue.github.io/mirskazok-legal/oferta.html" target="_blank">Публичная оферта</a></li>
+                        <li><a href="https://zolkinman-hue.github.io/mirskazok-legal/privacy.html" target="_blank">Политика конфиденциальности</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    &copy; 2024-2026 МирСказок. Все права защищены.
+                </div>
+                <div class="footer-requisites">
+                    ИП Золкин Алексей Игоревич, самозанятый НПД<br>
+                    ИНН 507504932922
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="assets/js/gsap.min.js"></script>
+    <script src="assets/js/ScrollTrigger.min.js"></script>
+    <script src="assets/js/lenis.min.js"></script>
+
+    <script>
+        // Check for reduced motion preference
+        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+        // Initialize Lenis smooth scroll
+        let lenis;
+        if (!prefersReducedMotion) {
+            lenis = new Lenis({
+                duration: 1.2,
+                easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+                orientation: 'vertical',
+                gestureOrientation: 'vertical',
+                smoothWheel: true,
+                touchMultiplier: 2,
+            });
+
+            function raf(time) {
+                lenis.raf(time);
+                requestAnimationFrame(raf);
+            }
+            requestAnimationFrame(raf);
+
+            // Sync Lenis with GSAP ScrollTrigger
+            lenis.on('scroll', ScrollTrigger.update);
+            gsap.ticker.add((time) => {
+                lenis.raf(time * 1000);
+            });
+            gsap.ticker.lagSmoothing(0);
+        }
+
+        // Register ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Generate stars
+        const starsContainer = document.getElementById('stars');
+        const starCount = window.innerWidth < 600 ? 50 : 100;
+
+        for (let i = 0; i < starCount; i++) {
+            const star = document.createElement('div');
+            star.className = 'star';
+            star.style.left = Math.random() * 100 + '%';
+            star.style.top = Math.random() * 100 + '%';
+            star.style.width = Math.random() * 2 + 1 + 'px';
+            star.style.height = star.style.width;
+            star.style.setProperty('--duration', (Math.random() * 3 + 2) + 's');
+            star.style.setProperty('--delay', Math.random() * 3 + 's');
+            starsContainer.appendChild(star);
+        }
+
+        // Hero animations
+        if (!prefersReducedMotion) {
+            const heroTl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+            heroTl
+                .to('.hero-badge', { opacity: 1, y: 0, duration: 0.8 }, 0.2)
+                .to('.hero h1', { opacity: 1, y: 0, duration: 1 }, 0.4)
+                .to('.hero-subtitle', { opacity: 1, y: 0, duration: 0.8 }, 0.6)
+                .to('.cta-btn', { opacity: 1, y: 0, duration: 0.8 }, 0.8)
+                .to('.hero-trust', { opacity: 1, y: 0, duration: 0.6 }, 1)
+                .to('.hero-image', { opacity: 1, x: 0, duration: 1 }, 0.6)
+                .to('.hero-float', { opacity: 0.6, duration: 1 }, 0.5);
+
+            // Steps animation
+            gsap.utils.toArray('.step').forEach((step, i) => {
+                gsap.to(step, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: i * 0.1,
+                    scrollTrigger: {
+                        trigger: step,
+                        start: 'top 85%',
+                    }
+                });
+            });
+
+            // Catalog cards animation
+            gsap.utils.toArray('.catalog-card').forEach((card, i) => {
+                gsap.to(card, {
+                    opacity: 1,
+                    y: 0,
+                    scale: 1,
+                    duration: 0.6,
+                    delay: (i % 3) * 0.1,
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
+                    }
+                });
+            });
+
+            // Book preview animation
+            gsap.to('.book-spread', {
+                opacity: 1,
+                scale: 1,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: '.book-preview',
+                    start: 'top 70%',
+                }
+            });
+
+            // Style chips animation
+            gsap.utils.toArray('.style-chip').forEach((chip, i) => {
+                gsap.to(chip, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.5,
+                    delay: i * 0.05,
+                    scrollTrigger: {
+                        trigger: '.styles-list',
+                        start: 'top 85%',
+                    }
+                });
+            });
+
+            // Pricing cards animation
+            gsap.utils.toArray('.pricing-card').forEach((card, i) => {
+                gsap.to(card, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: i * 0.15,
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
+                    }
+                });
+            });
+
+            // FAQ items animation
+            gsap.utils.toArray('.faq-item').forEach((item, i) => {
+                gsap.to(item, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    delay: i * 0.1,
+                    scrollTrigger: {
+                        trigger: item,
+                        start: 'top 90%',
+                    }
+                });
+            });
+
+            // Emotions cards animation
+            gsap.utils.toArray('.emotion-card').forEach((card, i) => {
+                gsap.to(card, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.8,
+                    delay: i * 0.15,
+                    scrollTrigger: {
+                        trigger: card,
+                        start: 'top 85%',
+                    }
+                });
+            });
+        } else {
+            // Show everything immediately for reduced motion
+            document.querySelectorAll('.hero-badge, .hero h1, .hero-subtitle, .cta-btn, .hero-float, .hero-trust, .hero-image, .step, .catalog-card, .book-spread, .style-chip, .pricing-card, .faq-item, .emotion-card').forEach(el => {
+                el.style.opacity = '1';
+                el.style.transform = 'none';
+            });
+        }
+
+        // Sticky CTA on mobile
+        const stickyCta = document.getElementById('stickyCta');
+        if (stickyCta && window.innerWidth <= 768) {
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 600) {
+                    stickyCta.classList.add('visible');
+                } else {
+                    stickyCta.classList.remove('visible');
+                }
+            });
+        }
+
+        // Book slider
+        const spreads = [
+            'assets/spreads/spread_forest_01.jpg',
+            'assets/spreads/spread_ocean_01.jpg',
+            'assets/spreads/spread_space_01.jpg',
+            'assets/spreads/spread_dino_01.jpg',
+            'assets/spreads/spread_birthday_01.jpg',
+            'assets/spreads/spread_forest_05.jpg'
+        ];
+
+        let currentSpread = 0;
+        const spreadImg = document.getElementById('spreadImg');
+        const bookNav = document.getElementById('bookNav');
+        const dots = bookNav.querySelectorAll('.book-nav-dot');
+
+        function showSpread(index) {
+            currentSpread = index;
+            spreadImg.style.opacity = '0';
+            setTimeout(() => {
+                spreadImg.src = spreads[index];
+                spreadImg.style.opacity = '1';
+            }, 200);
+
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+        }
+
+        document.getElementById('prevSpread').addEventListener('click', () => {
+            showSpread((currentSpread - 1 + spreads.length) % spreads.length);
+        });
+
+        document.getElementById('nextSpread').addEventListener('click', () => {
+            showSpread((currentSpread + 1) % spreads.length);
+        });
+
+        dots.forEach(dot => {
+            dot.addEventListener('click', () => {
+                showSpread(parseInt(dot.dataset.index));
+            });
+        });
+
+        // Touch swipe for book slider
+        let touchStartX = 0;
+        const bookSpread = document.getElementById('bookSpread');
+
+        bookSpread.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+        });
+
+        bookSpread.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const diff = touchStartX - touchEndX;
+
+            if (Math.abs(diff) > 50) {
+                if (diff > 0) {
+                    showSpread((currentSpread + 1) % spreads.length);
+                } else {
+                    showSpread((currentSpread - 1 + spreads.length) % spreads.length);
+                }
+            }
+        });
+
+        // FAQ accordion
+        document.querySelectorAll('.faq-question').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const item = btn.parentElement;
+                const wasActive = item.classList.contains('active');
+
+                // Close all
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('active'));
+
+                // Open clicked if wasn't active
+                if (!wasActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Magnetic button effect
+        const ctaButtons = document.querySelectorAll('.cta-btn');
+
+        if (!prefersReducedMotion && window.innerWidth > 768) {
+            ctaButtons.forEach(btn => {
+                btn.addEventListener('mousemove', (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - rect.left - rect.width / 2;
+                    const y = e.clientY - rect.top - rect.height / 2;
+
+                    gsap.to(btn, {
+                        x: x * 0.2,
+                        y: y * 0.2,
+                        duration: 0.3,
+                        ease: 'power2.out'
+                    });
+                });
+
+                btn.addEventListener('mouseleave', () => {
+                    gsap.to(btn, {
+                        x: 0,
+                        y: 0,
+                        duration: 0.5,
+                        ease: 'elastic.out(1, 0.5)'
+                    });
+                });
+            });
+        }
+
+        // Add transition for spread image
+        spreadImg.style.transition = 'opacity 0.3s ease';
+    </script>
+</body>
+</html>
