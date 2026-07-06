@@ -1078,6 +1078,175 @@
             }
         }
 
+        /* Mini Social Proof Banner */
+        .social-proof-banner {
+            padding: 14px 0;
+            background: rgba(212, 168, 83, 0.08);
+            border-top: 1px solid rgba(212, 168, 83, 0.15);
+            border-bottom: 1px solid rgba(212, 168, 83, 0.15);
+        }
+
+        .social-proof-banner .marquee-content {
+            font-size: 1rem;
+            color: var(--color-text);
+            font-weight: 500;
+            letter-spacing: 0.05em;
+        }
+
+        @media (max-width: 768px) {
+            .social-proof-banner .marquee-content {
+                font-size: 0.9rem;
+            }
+        }
+
+        /* Guarantee Section */
+        .guarantee {
+            background: var(--color-bg);
+            padding: 60px 24px;
+        }
+
+        .guarantee-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .guarantee-card {
+            padding: 32px;
+            background: rgba(212, 168, 83, 0.05);
+            border: 1px solid rgba(212, 168, 83, 0.2);
+            border-radius: 20px;
+            text-align: center;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .guarantee-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(212, 168, 83, 0.4);
+        }
+
+        .guarantee-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            border-radius: 50%;
+            padding: 12px;
+        }
+
+        .guarantee-icon svg {
+            width: 32px;
+            height: 32px;
+            stroke: var(--color-bg);
+        }
+
+        .guarantee-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+        }
+
+        .guarantee-card p {
+            color: var(--color-text-muted);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 600px) {
+            .guarantee { padding: 40px 16px; }
+            .guarantee-grid { grid-template-columns: 1fr; }
+        }
+
+        /* Comparison Section */
+        .comparison {
+            background: var(--color-bg-warm);
+            padding: 100px 24px;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .comparison-card {
+            position: relative;
+            padding: 32px 24px;
+            background: rgba(212, 168, 83, 0.08);
+            border: 2px solid rgba(212, 168, 83, 0.25);
+            border-radius: 20px;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .comparison-card.neutral {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .comparison-card:hover {
+            transform: translateY(-4px);
+        }
+
+        .comparison-card:not(.neutral):hover {
+            border-color: rgba(212, 168, 83, 0.5);
+        }
+
+        .comparison-label {
+            display: inline-block;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 16px;
+        }
+
+        .comparison-label.mirskazok {
+            background: linear-gradient(135deg, var(--color-gold) 0%, var(--color-gold-light) 100%);
+            color: var(--color-bg);
+        }
+
+        .comparison-label.other {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--color-text-muted);
+        }
+
+        .comparison-card h3 {
+            font-family: var(--font-display);
+            font-size: 1.25rem;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .comparison-card p {
+            color: var(--color-text-muted);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .comparison-icon {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .comparison { padding: 60px 16px; }
+            .comparison-grid { grid-template-columns: 1fr; }
+            .comparison-card { padding: 24px 20px; }
+            .comparison-icon { font-size: 1.5rem; }
+        }
+
         /* Touch ripple: золотое свечение в точке касания (awwwards-effects.js) */
         .ripple-host {
             position: relative;
@@ -1403,6 +1572,11 @@
             </div>
         </section>
 
+        <!-- Mini Social Proof Bar -->
+        <div class="marquee social-proof-banner">
+            <div class="marquee-content">⭐ 4.9 из 5 по отзывам родителей ✦ книги уже радуют сотни детей по всей России ✦ превью книги — бесплатно ✦ </div>
+        </div>
+
         <!-- How It Works -->
         <section class="how-it-works" id="how-it-works">
             <div class="container">
@@ -1651,6 +1825,60 @@
             </div>
         </section>
 
+        <!-- Comparison: МирСказок vs обычная книга -->
+        <section class="comparison">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="text-gradient">МирСказок vs обычная книга</h2>
+                    <p>Почему персональная книга становится самой любимой</p>
+                </div>
+
+                <div class="comparison-grid">
+                    <div class="comparison-card">
+                        <div class="comparison-label mirskazok">МирСказок</div>
+                        <h3>Ваш ребёнок — главный герой</h3>
+                        <p>Малыш видит себя космонавтом, принцессой или рыцарем. Лицо и имя ребёнка на каждой странице</p>
+                        <div class="comparison-icon">✨</div>
+                    </div>
+
+                    <div class="comparison-card neutral">
+                        <div class="comparison-label other">Обычная книга</div>
+                        <h3>Безымянный персонаж</h3>
+                        <p>Ребёнок наблюдает за чужими героями со стороны. Имя в лучшем случае на обложке</p>
+                        <div class="comparison-icon">📖</div>
+                    </div>
+
+                    <div class="comparison-card">
+                        <div class="comparison-label mirskazok">МирСказок</div>
+                        <h3>Уникальные AI-иллюстрации</h3>
+                        <p>10 авторских иллюстраций, созданных специально для вашего ребёнка в выбранном стиле</p>
+                        <div class="comparison-icon">🎨</div>
+                    </div>
+
+                    <div class="comparison-card neutral">
+                        <div class="comparison-label other">Обычная книга</div>
+                        <h3>Тираж как у всех</h3>
+                        <p>Одинаковые картинки для тысяч детей. Никакой персонализации</p>
+                        <div class="comparison-icon">📚</div>
+                    </div>
+
+                    <div class="comparison-card">
+                        <div class="comparison-label mirskazok">МирСказок</div>
+                        <h3>Эмоция на годы</h3>
+                        <p>Дети бережно хранят «книгу про себя», перечитывают десятки раз, показывают друзьям</p>
+                        <div class="comparison-icon">💝</div>
+                    </div>
+
+                    <div class="comparison-card neutral">
+                        <div class="comparison-label other">Обычная книга</div>
+                        <h3>Прочитал и забыл</h3>
+                        <p>Одна из множества на полке. Интерес пропадает после первого прочтения</p>
+                        <div class="comparison-icon">😐</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Pricing -->
         <section class="pricing" id="pricing">
             <div class="container">
@@ -1701,6 +1929,32 @@
                             <li>Приоритетное создание</li>
                         </ul>
                         <a href="https://t.me/Skazochk1_bot" class="pricing-cta">Заказать</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Guarantee -->
+        <section class="guarantee">
+            <div class="container">
+                <div class="guarantee-grid">
+                    <div class="guarantee-card">
+                        <div class="guarantee-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                        </div>
+                        <h3>Превью до оплаты</h3>
+                        <p>Одобрите дизайн обложки и первых страниц — и только потом платите. Не понравится — не платите ни копейки</p>
+                    </div>
+                    <div class="guarantee-card">
+                        <div class="guarantee-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                            </svg>
+                        </div>
+                        <h3>Гарантия качества печати</h3>
+                        <p>Обнаружили брак при получении? Перепечатаем книгу бесплатно и доставим за наш счёт</p>
                     </div>
                 </div>
             </div>
